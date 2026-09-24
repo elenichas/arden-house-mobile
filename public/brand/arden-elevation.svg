@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 300" role="img" aria-labelledby="title">
+  <title id="title">Arden House building elevation</title>
+  <rect width="460" height="300" fill="none"/>
+  <g fill="none" stroke="#1f201c" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M90 260h280"/>
+    <path d="M122 260V78h216v182"/>
+    <path d="M110 78h240"/>
+    <path d="M138 58h184l28 20H110l28-20Z"/>
+    <path d="M158 260V104h48v156M254 260V104h48v156"/>
+    <path d="M214 260v-64c0-18 14-32 31-32s31 14 31 32v64"/>
+    <path d="M146 126h68M246 126h68M146 158h68M246 158h68M146 190h48M286 190h28"/>
+    <path d="M122 232h216"/>
+    <path d="M184 58V40M276 58V40"/>
+    <path d="M166 40h128"/>
+  </g>
+</svg>

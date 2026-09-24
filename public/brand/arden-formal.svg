@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 110" role="img" aria-labelledby="title">
+  <title id="title">Arden House</title>
+  <rect width="620" height="110" fill="none"/>
+  <g fill="#1f201c">
+    <text x="310" y="53" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="35" font-weight="600" letter-spacing="10">ARDEN HOUSE</text>
+    <text x="310" y="82" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="16" font-style="italic">city hotel and rooms</text>
+  </g>
+</svg>
