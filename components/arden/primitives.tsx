@@ -84,12 +84,18 @@ export function Card({
    by mixing a touch of ink for weight. */
 export const PrimaryButton = React.forwardRef<
   HTMLButtonElement,
-  { children: React.ReactNode; className?: string; disabled?: boolean; onClick?: () => void }
->(function PrimaryButton({ children, className, disabled, onClick }, ref) {
+  {
+    children: React.ReactNode
+    className?: string
+    disabled?: boolean
+    onClick?: () => void
+    type?: "button" | "submit"
+  }
+>(function PrimaryButton({ children, className, disabled, onClick, type = "button" }, ref) {
   return (
     <motion.button
       ref={ref}
-      type="button"
+      type={type}
       onClick={onClick}
       whileTap={{ scale: disabled ? 1 : 0.98 }}
       transition={{ duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}

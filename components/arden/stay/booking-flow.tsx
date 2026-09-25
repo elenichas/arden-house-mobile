@@ -27,6 +27,7 @@ import type { BookingPath, NoiseLevel, RoomTypeId } from "../types"
 import { BrandMark, Card, ElevationMark, GoldRule, PrimaryButton } from "../primitives"
 
 type Step = "path" | "dates" | "rebook" | "room" | "review" | "confirmed"
+type CompletionDestination = "stay" | "room"
 
 function addDays(iso: string, n: number) {
   const d = new Date(iso)
@@ -63,9 +64,33 @@ function fmtShort(iso: string) {
   }).format(new Date(iso))
 }
 
-export function BookingFlow({ onClose }: { onClose: () => void }) {
+export function BookingFlow({
+  onClose,
+  onComplete,
+  initialPath = null,
+  initialRoomTypeId = null,
+}: {
+  onClose: () => void
+  onComplete?: (destination: CompletionDestination) => void
+  initialPath?: BookingPath | null
+  initialRoomTypeId?: RoomTypeId | null
+}) {
   const { bookingDraft, updateDraft, resetDraft, setBooking, jumpTo } = useArden()
-  const [step, setStep] = React.useState<Step>("path")
+  const [step, setStep] = React.useState<Step>(() => {
+    if (initialPath === "rebook") return initialRoomTypeId ? "dates" : "rebook"
+    if (initialPath === "browse") return "dates"
+    return "path"
+  })
+  const seeded = React.useRef(false)
+
+  React.useEffect(() => {
+    if (seeded.current) return
+    seeded.current = true
+    resetDraft()
+    if (initialPath) {
+      updateDraft({ path: initialPath, roomTypeId: initialRoomTypeId })
+    }
+  }, [initialPath, initialRoomTypeId, resetDraft, updateDraft])
 
   // Seed dates when entering the dates step
   React.useEffect(() => {
@@ -124,8 +149,18 @@ export function BookingFlow({ onClose }: { onClose: () => void }) {
     setStep("confirmed")
   }
 
-  const finish = () => {
+  const cancel = () => {
     resetDraft()
+    onClose()
+  }
+
+  const complete = (destination: CompletionDestination) => {
+    resetDraft()
+    if (onComplete) {
+      onComplete(destination)
+      return
+    }
+    jumpTo(destination)
     onClose()
   }
 
@@ -137,7 +172,7 @@ export function BookingFlow({ onClose }: { onClose: () => void }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="fixed inset-0 z-50 flex flex-col bg-cream"
+      className="fixed inset-0 z-[100] flex flex-col bg-cream"
     >
       {/* Header */}
       <header className="glass-warm sticky top-0 z-10 flex items-center justify-between px-5 py-4 sm:px-8">
@@ -159,7 +194,7 @@ export function BookingFlow({ onClose }: { onClose: () => void }) {
         </div>
         <button
           type="button"
-          onClick={finish}
+          onClick={cancel}
           className="inline-flex h-8 w-8 items-center justify-center rounded-full text-ink-muted hover:text-ink hover:bg-cream-soft transition-colors duration-300"
           aria-label="Close"
         >
@@ -191,7 +226,7 @@ export function BookingFlow({ onClose }: { onClose: () => void }) {
             <StepRoom key="room" onContinue={goToReview} canContinue={canContinueRoom} />
           )}
           {step === "review" && <StepReview key="review" onConfirm={confirm} />}
-          {step === "confirmed" && <StepConfirmed key="confirmed" onDone={finish} />}
+          {step === "confirmed" && <StepConfirmed key="confirmed" onDone={complete} />}
         </AnimatePresence>
       </div>
     </motion.div>
@@ -505,11 +540,15 @@ function StepRoom({
         Book a guestroom · Choose your room
       </div>
       <h2 className="text-display text-ink text-[30px] sm:text-[36px] leading-[1.04] text-balance">
-        Four ways
+        Available for your dates,
         <br />
-        <span className="italic font-light text-ink-soft">to rest.</span>
+        <span className="italic font-light text-ink-soft">four ways to rest.</span>
       </h2>
       <GoldRule className="mt-5" />
+      <p className="mt-4 max-w-md font-serif italic text-[14px] leading-relaxed text-ink-soft">
+        Compare the essentials first. Select a room to reveal its view, location,
+        and nearby amenities.
+      </p>
 
       <div className="mt-7 flex flex-col gap-5">
         {roomTypes.map((r) => {
@@ -526,7 +565,7 @@ function StepRoom({
                   : "ring-transparent",
               )}
             >
-              <div className="relative h-48 w-full overflow-hidden">
+              <div className="relative h-36 w-full overflow-hidden sm:h-40">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={r.image || "/placeholder.svg"}
@@ -564,47 +603,46 @@ function StepRoom({
                   </span>
                 </div>
 
-                {/* Context — view, orientation, noise. Presented as quiet rows so the
-                    guest can imagine the room before choosing it. */}
-                <dl className="mt-4 space-y-2.5 border-t border-[color:color-mix(in_oklch,var(--ink)_7%,transparent)] pt-4 text-[13px]">
-                  <InfoRow
-                    icon={Eye}
-                    label="View"
-                    value={r.view}
-                  />
-                  <InfoRow
-                    icon={Compass}
-                    label="Orientation"
-                    value={r.orientation}
-                  />
-                  <InfoRow
-                    icon={noiseIcon(r.noise)}
-                    label="Noise"
-                    value={`${noiseLabel(r.noise)}: ${r.noiseHint}`}
-                  />
-                </dl>
+                {selected ? (
+                  <motion.div
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.22, ease: [0.22, 0.61, 0.36, 1] }}
+                  >
+                    {/* Context — reveal the detailed comparison only for the room
+                        the guest is actively considering. */}
+                    <dl className="mt-4 space-y-2.5 border-t border-[color:color-mix(in_oklch,var(--ink)_7%,transparent)] pt-4 text-[13px]">
+                      <InfoRow icon={Eye} label="View" value={r.view} />
+                      <InfoRow icon={Compass} label="Orientation" value={r.orientation} />
+                      <InfoRow
+                        icon={noiseIcon(r.noise)}
+                        label="Noise"
+                        value={`${noiseLabel(r.noise)}: ${r.noiseHint}`}
+                      />
+                    </dl>
 
-                {/* Nearby amenities — helps business travellers judge logistics. */}
-                <div className="mt-4 border-t border-[color:color-mix(in_oklch,var(--ink)_7%,transparent)] pt-4">
-                  <div className="mb-2 flex items-center gap-1.5 font-sans text-[10px] tracking-[0.22em] uppercase text-ink-muted">
-                    <MapPin className="h-3 w-3" strokeWidth={1.5} />
-                    Closest amenities
-                  </div>
-                  <ul className="space-y-1.5 font-serif text-[13.5px] text-ink-soft">
-                    {r.nearby.map((n) => (
-                      <li key={n.label} className="flex gap-2 leading-snug">
-                        <span
-                          aria-hidden
-                          className="mt-1.5 inline-block h-1 w-1 shrink-0 rounded-full bg-gold-deep"
-                        />
-                        <span>
-                          <span className="text-ink">{n.label}</span>
-                          <span className="text-ink-muted"> · {n.detail}</span>
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                    <div className="mt-4 border-t border-[color:color-mix(in_oklch,var(--ink)_7%,transparent)] pt-4">
+                      <div className="mb-2 flex items-center gap-1.5 font-sans text-[10px] tracking-[0.22em] uppercase text-ink-muted">
+                        <MapPin className="h-3 w-3" strokeWidth={1.5} />
+                        Closest amenities
+                      </div>
+                      <ul className="space-y-1.5 font-serif text-[13.5px] text-ink-soft">
+                        {r.nearby.map((n) => (
+                          <li key={n.label} className="flex gap-2 leading-snug">
+                            <span
+                              aria-hidden
+                              className="mt-1.5 inline-block h-1 w-1 shrink-0 rounded-full bg-gold-deep"
+                            />
+                            <span>
+                              <span className="text-ink">{n.label}</span>
+                              <span className="text-ink-muted"> · {n.detail}</span>
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </motion.div>
+                ) : null}
 
                 {/* Amenity chips, plus the running total */}
                 <div className="mt-4 flex flex-wrap items-center gap-1.5">
@@ -752,8 +790,12 @@ function StepReview({ onConfirm }: { onConfirm: () => void }) {
 }
 
 /* ——— Step 4: confirmed ——— */
-function StepConfirmed({ onDone }: { onDone: () => void }) {
-  const { booking, jumpTo } = useArden()
+function StepConfirmed({
+  onDone,
+}: {
+  onDone: (destination: CompletionDestination) => void
+}) {
+  const { booking } = useArden()
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
@@ -799,17 +841,14 @@ function StepConfirmed({ onDone }: { onDone: () => void }) {
 
       <div className="mt-8 flex flex-wrap gap-3">
         <PrimaryButton
-          onClick={() => {
-            onDone()
-            jumpTo("room")
-          }}
+          onClick={() => onDone("room")}
         >
           Enter profile
           <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
         </PrimaryButton>
         <button
           type="button"
-          onClick={onDone}
+          onClick={() => onDone("stay")}
           className="font-sans text-[13px] text-ink-muted hover:text-ink transition-colors duration-500"
         >
           Back to your stay

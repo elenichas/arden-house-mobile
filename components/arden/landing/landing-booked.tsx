@@ -2,9 +2,19 @@
 
 import * as React from "react"
 import { motion } from "framer-motion"
-import { ArrowLeft, ArrowRight, MoonStar, Plane } from "lucide-react"
+import {
+  AlertCircle,
+  ArrowLeft,
+  ArrowRight,
+  LoaderCircle,
+  MoonStar,
+  Phone,
+  Plane,
+  Search,
+} from "lucide-react"
 import { Card, GoldRule, PrimaryButton } from "../primitives"
-import { guest, hotel, currentBooking, roomById } from "../data"
+import { guest, hotel, roomById } from "../data"
+import { useArden } from "../arden-context"
 
 /**
  * Landing: Booked Guest
@@ -26,6 +36,161 @@ function formatRange(a: string, b: string) {
   return `${fmt.format(new Date(a))} – ${fmt.format(new Date(b))}`
 }
 
+function ReservationLookup({
+  bookingReference,
+  onFound,
+  onHome,
+}: {
+  bookingReference: string
+  onFound: () => void
+  onHome: () => void
+}) {
+  const [reference, setReference] = React.useState("")
+  const [identity, setIdentity] = React.useState("")
+  const [error, setError] = React.useState("")
+  const [loading, setLoading] = React.useState(false)
+  const timer = React.useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  React.useEffect(
+    () => () => {
+      if (timer.current) clearTimeout(timer.current)
+    },
+    [],
+  )
+
+  const lookup = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (!reference.trim() || !identity.trim()) {
+      setError("Enter both your booking reference and surname or email.")
+      return
+    }
+
+    setLoading(true)
+    setError("")
+    timer.current = setTimeout(() => {
+      const referenceMatches =
+        reference.replace(/\s/g, "").toUpperCase() === bookingReference
+      const identityValue = identity.trim().toLowerCase()
+      const identityMatches =
+        identityValue === guest.lastName.toLowerCase() ||
+        identityValue === guest.email.toLowerCase()
+
+      setLoading(false)
+      if (referenceMatches && identityMatches) {
+        onFound()
+      } else {
+        setError(
+          "We couldn’t match those details. Check the reference and guest information, then try again.",
+        )
+      }
+    }, 550)
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 1 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[90] flex flex-col overflow-y-auto bg-cream"
+    >
+      <header className="flex items-center justify-between px-5 pt-[calc(16px+env(safe-area-inset-top))] sm:px-8">
+        <button
+          type="button"
+          onClick={onHome}
+          className="inline-flex h-11 items-center gap-2 rounded-[10px] border border-[color:color-mix(in_oklch,var(--ink)_14%,transparent)] px-3 font-sans text-[10px] font-bold uppercase tracking-[0.18em] text-ink-soft transition-colors hover:text-ink"
+          aria-label="Back to start"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.6} />
+          Start
+        </button>
+        <span className="font-sans text-[10px] uppercase tracking-[0.22em] text-ink-muted">
+          Find your stay
+        </span>
+      </header>
+
+      <main className="mx-auto flex w-full max-w-xl flex-1 flex-col justify-center px-5 py-12 sm:px-8">
+        <div className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[color:color-mix(in_oklch,var(--gold)_12%,var(--cream-soft))]">
+          <Search className="h-4.5 w-4.5 text-gold-deep" strokeWidth={1.5} />
+        </div>
+        <h1 className="mt-6 text-display text-[32px] leading-[1.04] text-ink sm:text-[40px] text-balance">
+          Find your reservation.
+        </h1>
+        <p className="mt-4 max-w-md font-serif text-[16px] leading-relaxed text-ink-soft">
+          Use the reference from your confirmation and the lead guest’s surname or email.
+        </p>
+        <GoldRule className="mt-6" />
+
+        <form onSubmit={lookup} className="mt-8 space-y-5" noValidate>
+          <label className="block">
+            <span className="font-sans text-[11px] font-bold text-ink-soft">
+              Booking reference
+            </span>
+            <input
+              value={reference}
+              onChange={(event) => {
+                setReference(event.target.value.toUpperCase())
+                setError("")
+              }}
+              autoComplete="off"
+              placeholder={bookingReference}
+              aria-describedby="lookup-demo"
+              className="mt-2 h-12 w-full rounded-[12px] border border-[color:color-mix(in_oklch,var(--ink)_18%,transparent)] bg-cream-soft px-4 font-sans text-[15px] uppercase tracking-[0.08em] text-ink outline-none transition-colors placeholder:text-ink-muted focus:border-gold-deep"
+            />
+          </label>
+
+          <label className="block">
+            <span className="font-sans text-[11px] font-bold text-ink-soft">
+              Surname or email
+            </span>
+            <input
+              value={identity}
+              onChange={(event) => {
+                setIdentity(event.target.value)
+                setError("")
+              }}
+              autoComplete="email"
+              placeholder="Bennett"
+              className="mt-2 h-12 w-full rounded-[12px] border border-[color:color-mix(in_oklch,var(--ink)_18%,transparent)] bg-cream-soft px-4 font-sans text-[15px] text-ink outline-none transition-colors placeholder:text-ink-muted focus:border-gold-deep"
+            />
+          </label>
+
+          <p id="lookup-demo" className="font-serif italic text-[13px] text-ink-muted">
+            Prototype details: {bookingReference} and Bennett.
+          </p>
+
+          {error ? (
+            <div
+              role="alert"
+              className="flex items-start gap-3 rounded-[12px] bg-[color:color-mix(in_oklch,var(--terracotta)_9%,var(--cream-soft))] p-4 text-ink"
+            >
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-terracotta" strokeWidth={1.7} />
+              <p className="font-sans text-[13px] leading-relaxed">{error}</p>
+            </div>
+          ) : null}
+
+          <div className="flex flex-wrap items-center gap-4 pt-2">
+            <PrimaryButton type="submit" disabled={loading}>
+              {loading ? (
+                <LoaderCircle className="h-4 w-4 animate-spin" strokeWidth={1.5} />
+              ) : (
+                <Search className="h-4 w-4" strokeWidth={1.5} />
+              )}
+              {loading ? "Finding your stay" : "Find reservation"}
+            </PrimaryButton>
+            <a
+              href={`tel:${hotel.phone.replace(/[^+\d]/g, "")}`}
+              className="inline-flex min-h-11 items-center gap-2 font-sans text-[12px] font-bold text-ink-soft transition-colors hover:text-ink"
+            >
+              <Phone className="h-4 w-4" strokeWidth={1.5} />
+              Call the hotel
+            </a>
+          </div>
+        </form>
+      </main>
+    </motion.div>
+  )
+}
+
 export function LandingBooked({
   onEnterApp,
   onEnterPrelude,
@@ -35,9 +200,20 @@ export function LandingBooked({
   onEnterPrelude: () => void
   onHome: () => void
 }) {
-  const booking = currentBooking
+  const [bookingFound, setBookingFound] = React.useState(false)
+  const { booking } = useArden()
   const days = daysUntil(booking.checkIn)
   const room = roomById(booking.roomTypeId)
+
+  if (!bookingFound) {
+    return (
+      <ReservationLookup
+        bookingReference={booking.id}
+        onFound={() => setBookingFound(true)}
+        onHome={onHome}
+      />
+    )
+  }
 
   return (
     <motion.div

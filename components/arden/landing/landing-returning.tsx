@@ -26,7 +26,7 @@ import {
   savedArrivalProfile,
   savedArrivalTiles,
 } from "../data"
-import type { RoomTypeId } from "../types"
+import type { BookingPath, RoomTypeId } from "../types"
 
 function fmtShort(iso: string) {
   return new Intl.DateTimeFormat("en-GB", {
@@ -37,10 +37,14 @@ function fmtShort(iso: string) {
 }
 
 export function LandingReturning({
-  onEnterApp,
+  onStartBooking,
   onHome,
 }: {
-  onEnterApp: () => void
+  onStartBooking: (options: {
+    path: BookingPath
+    roomTypeId?: RoomTypeId
+    amendProfile?: boolean
+  }) => void
   onHome: () => void
 }) {
   const [selectedRoom, setSelectedRoom] = React.useState<RoomTypeId>(
@@ -308,14 +312,22 @@ export function LandingReturning({
           transition={{ duration: 1.0, delay: 2.0, ease: [0.22, 0.61, 0.36, 1] }}
           className="mt-10 flex flex-col items-center gap-4 border-t border-[color:color-mix(in_oklch,var(--ink)_8%,transparent)] pt-8"
         >
-          <PrimaryButton onClick={onEnterApp}>
+          <PrimaryButton
+            onClick={() =>
+              onStartBooking({
+                path: "rebook",
+                roomTypeId: selectedRoom,
+                amendProfile: preludeAction === "amend",
+              })
+            }
+          >
             {preludeAction === "keep"
               ? `Rebook the ${selectedRoomData?.name}`
               : `Rebook & amend your profile`}
             <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
           </PrimaryButton>
 
-          <GhostButton onClick={onEnterApp}>
+          <GhostButton onClick={() => onStartBooking({ path: "browse" })}>
             <Sparkles className="h-3.5 w-3.5" strokeWidth={1.5} />
             I&apos;d like something different this time
           </GhostButton>

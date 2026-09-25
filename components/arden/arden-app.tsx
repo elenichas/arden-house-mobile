@@ -13,9 +13,9 @@ import { AssistantTab } from "./assistant/assistant-tab"
 import { SplashScreen } from "./splash-screen"
 import { GuestGate } from "./landing/guest-gate"
 import { LandingBooked } from "./landing/landing-booked"
-import { LandingNew } from "./landing/landing-new"
 import { LandingReturning } from "./landing/landing-returning"
-import type { GuestType, TabId } from "./types"
+import { BookingFlow } from "./stay/booking-flow"
+import type { BookingPath, GuestType, RoomTypeId, TabId } from "./types"
 
 /**
  * All four tabs stay mounted so their state (arrival-profile selections,
@@ -90,6 +90,11 @@ function AppShell({ initialGuestType }: { initialGuestType?: GuestType | null })
     initialGuestType ?? null,
   )
   const [landingDone, setLandingDone] = React.useState(false)
+  const [entryBooking, setEntryBooking] = React.useState<{
+    path: BookingPath
+    roomTypeId?: RoomTypeId
+    amendProfile?: boolean
+  } | null>(null)
 
   const enterArrivalProfile = React.useCallback(() => {
     jumpTo("room")
@@ -98,8 +103,15 @@ function AppShell({ initialGuestType }: { initialGuestType?: GuestType | null })
 
   const returnToStart = React.useCallback(() => {
     jumpTo("stay")
+    setEntryBooking(null)
     setLandingDone(false)
     setGuestType(null)
+  }, [jumpTo])
+
+  const finishEntryBooking = React.useCallback((destination: "stay" | "room") => {
+    setEntryBooking(null)
+    setLandingDone(true)
+    jumpTo(destination)
   }, [jumpTo])
 
   return (
@@ -130,19 +142,36 @@ function AppShell({ initialGuestType }: { initialGuestType?: GuestType | null })
               />
             )}
             {guestType === "new" && (
-              <LandingNew
-                onEnterApp={() => setLandingDone(true)}
-                onHome={returnToStart}
+              <BookingFlow
+                key="first-booking"
+                initialPath="browse"
+                onClose={returnToStart}
+                onComplete={(destination) => {
+                  setLandingDone(true)
+                  jumpTo(destination)
+                }}
               />
             )}
             {guestType === "returning" && (
               <LandingReturning
-                onEnterApp={() => setLandingDone(true)}
+                onStartBooking={setEntryBooking}
                 onHome={returnToStart}
               />
             )}
           </React.Fragment>
         )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {entryBooking && !landingDone ? (
+          <BookingFlow
+            key={`${entryBooking.path}-${entryBooking.roomTypeId ?? "choose"}`}
+            initialPath={entryBooking.path}
+            initialRoomTypeId={entryBooking.roomTypeId}
+            onClose={() => setEntryBooking(null)}
+            onComplete={finishEntryBooking}
+          />
+        ) : null}
       </AnimatePresence>
 
       {/* 4. The main app — always mounted behind the overlays so state is warm */}
