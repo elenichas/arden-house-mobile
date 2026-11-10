@@ -4,6 +4,14 @@ Aspra is a phone-first guest app for a fictional 22-suite sea hotel cut into the
 
 All guests, bookings and prices are fictional. No payment is taken and no request is sent anywhere.
 
+![The gate on a desktop screen: a photo of the hotel in the cliffs, with three ways in](docs/screenshots/gate-desktop.jpg)
+
+| Today, before the stay | Plan | Nefeli, the concierge |
+| --- | --- | --- |
+| ![Today tab on a phone, showing the countdown to the stay](docs/screenshots/today-phone.jpg) | ![Plan tab on a phone, showing the days of the stay](docs/screenshots/plan-phone.jpg) | ![Nefeli tab on a phone, showing suggested questions](docs/screenshots/nefeli-phone.jpg) |
+
+Built with Next.js 16, React 19, Tailwind CSS 4, Framer Motion and React Three Fiber.
+
 ## Guest journeys
 
 The gate offers three ways in. You can also open one directly with `?guest=new`, `?guest=booked` or `?guest=returning`.
@@ -23,7 +31,9 @@ Your profile (top right) holds the preferences that carry from stay to stay.
 
 ## Your suite in 3D
 
-Guests can walk through their suite before they arrive and set it up. The suite is modelled in code with Three.js (React Three Fiber, drei and postprocessing) in `components/aspra/suite3d/`, so there is no model or texture file to download. Open it on its own at `/suite` (or `/suite?suite=cave`).
+Guests can walk through their suite before they arrive and set it up. The suite is modelled in code with Three.js (React Three Fiber, drei and postprocessing) in `components/aspra/suite3d/`, so there is no model or texture file to download. Open it on its own at `/suite` (or `/suite?suite=cave`, `pool` or `villa`).
+
+![The plunge pool suite in 3D at sunset, with hotspots and the settings dock](docs/screenshots/suite-3d-desktop.jpg)
 
 The room is a hand-plastered barrel vault cut into the cliff, with a deep arch onto a terrace 14 m above the sea. Inside there is a built-in plaster wardrobe with arched bays, linen robes and cane doors. Outside there is a pergola, loungers, bougainvillea over the arch, a plunge pool for the pool suite and villa, an animated sea, and the hotel caique in the bay.
 
@@ -53,6 +63,8 @@ The app is designed for phones first and adapts at two widths:
 - Tablet (768 px and up): a wider column, dialogs and booking flows open in a centred window, lists go to two columns.
 - Desktop (1024 px and up): a glass sidebar replaces the top bar and tab bar, Today and Plan use two columns, and the 3D suite fills the window with its settings panel on the right.
 
+![Today on a desktop screen, with the sidebar and two columns](docs/screenshots/today-desktop.jpg)
+
 ## The concierge
 
 `app/api/chat/route.ts` streams replies from Claude through the Vercel AI Gateway when `AI_GATEWAY_API_KEY` (or a Vercel OIDC token) is set. Without it, the route returns 503 and the app uses the local responder in `components/aspra/concierge-engine.ts`, which reads the guest's stage, booking, plan and preferences. The local responder also supplies the action buttons for every reply.
@@ -66,7 +78,9 @@ pnpm install
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) at phone width.
+Open [http://localhost:3000](http://localhost:3000). The quickest way to see the full app is `?guest=booked`, which opens Clara's sample booking.
+
+The concierge works without any setup. To get replies from Claude, put `AI_GATEWAY_API_KEY` in `.env.local`.
 
 ## Quality checks
 
@@ -81,7 +95,10 @@ pnpm build
 - `components/aspra/store.tsx` holds app state: guest, booking, preferences, plan, requests.
 - `components/aspra/entry/` has the gate, booking flow, booked and returning entries.
 - `components/aspra/tabs/` has Today, Plan, Nefeli and Journal.
+- `components/aspra/suite3d/` has the 3D suite.
+- `app/api/chat/route.ts` is the concierge route.
 - `public/images/aspra/` has the generated photography.
+- `docs/screenshots/` has the images in this file.
 
 ## Design
 
