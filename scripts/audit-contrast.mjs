@@ -1,5 +1,8 @@
-// WCAG 2.1 contrast audit for the  Pierpont palette.
-// Converts OKLCH tokens from globals.css to sRGB, then computes contrast ratios.
+// WCAG 2.1 contrast audit for the Aspra palette.
+// Reads the colour tokens (hex or OKLCH) from the :root block of app/globals.css,
+// converts them to sRGB, then checks the text and background pairs the app uses.
+
+import fs from "node:fs"
 
 // --- OKLCH -> linear sRGB -> sRGB (approximation of CSS Color 4) ---
 function oklchToRgb(L, C, hDeg) {
@@ -44,19 +47,14 @@ function hex([r, g, b]) {
   return "#" + c(r) + c(g) + c(b)
 }
 
-const tokens = {
-  cream: oklchToRgb(0.965, 0.015, 78),
-  "cream-soft": oklchToRgb(0.945, 0.02, 78),
-  beige: oklchToRgb(0.9, 0.025, 75),
-  tan: oklchToRgb(0.82, 0.04, 70),
-  "tan-deep": oklchToRgb(0.7, 0.05, 60),
-  ink: oklchToRgb(0.22, 0.015, 55),
-  "ink-soft": oklchToRgb(0.38, 0.02, 55),
-  "ink-muted": oklchToRgb(0.5, 0.025, 60),
-  terracotta: oklchToRgb(0.5, 0.13, 38),
-  "terracotta-soft": oklchToRgb(0.72, 0.08, 45),
-  gold: oklchToRgb(0.72, 0.09, 78),
-  "gold-deep": oklchToRgb(0.5, 0.12, 70),
+const css = fs.readFileSync(new URL("../app/globals.css", import.meta.url), "utf8")
+const root = css.slice(css.indexOf(":root {"), css.indexOf("@theme inline"))
+const tokens = { white: [1, 1, 1] }
+for (const m of root.matchAll(/--([a-z0-9-]+):\s*oklch\(([\d.]+)\s+([\d.]+)\s+([\d.]+)\)/g)) {
+  tokens[m[1]] = oklchToRgb(Number(m[2]), Number(m[3]), Number(m[4]))
+}
+for (const m of root.matchAll(/--([a-z0-9-]+):\s*#([0-9a-fA-F]{6})\b/g)) {
+  tokens[m[1]] = [0, 2, 4].map((i) => parseInt(m[2].slice(i, i + 2), 16) / 255)
 }
 
 console.log("\nRESOLVED TOKENS")
@@ -66,30 +64,25 @@ for (const [name, rgb] of Object.entries(tokens)) {
 }
 
 const pairs = [
-  // Body text on canvas
-  ["ink", "cream"],
-  ["ink", "cream-soft"],
-  ["ink", "beige"],
-  ["ink-soft", "cream"],
-  ["ink-soft", "cream-soft"],
-  ["ink-muted", "cream"],
-  ["ink-muted", "cream-soft"],
-  ["ink-muted", "beige"],
-  // Inverted: cream text on dark backgrounds
-  ["cream", "ink"],
-  ["cream", "ink-soft"],
-  // Gold text — often used as an accent label
-  ["gold", "cream"],
-  ["gold-deep", "cream"],
-  ["gold-deep", "cream-soft"],
-  // Terracotta (primary button)
-  ["cream", "terracotta"],
-  ["ink", "terracotta"],
-  ["terracotta", "cream"],
-  ["terracotta", "cream-soft"],
-  // Chips / badges
-  ["ink-muted", "tan"],
-  ["ink", "tan"],
+  // Body and secondary text on light surfaces
+  ["ink", "chalk"],
+  ["ink-2", "chalk"],
+  ["ink-3", "chalk"],
+  ["ink-3", "white"],
+  ["ink-2", "sea-wash"],
+  // Accent text and selection
+  ["sea", "chalk"],
+  ["sea", "white"],
+  ["sea-deep", "sea-wash"],
+  ["clay", "clay-wash"],
+  ["olive", "white"],
+  // Buttons
+  ["white", "ink"],
+  ["white", "sea"],
+  // Dark surfaces (gate, concierge, 3D tour)
+  ["chalk", "obsidian"],
+  ["chalk", "obsidian-2"],
+  ["sulphur", "obsidian"],
 ]
 
 console.log("\nWCAG CONTRAST RATIOS (AA target: 4.5 body / 3.0 large/UI)")
@@ -102,3 +95,6 @@ for (const [fg, bg] of pairs) {
     `${mark.padEnd(5)} ${ratio.toFixed(2).padStart(5)}:1  ${fg} on ${bg}  (${pass})`,
   )
 }
+
+const failures = pairs.filter(([fg, bg]) => contrast(tokens[fg], tokens[bg]) < 4.5)
+process.exitCode = failures.length ? 1 : 0

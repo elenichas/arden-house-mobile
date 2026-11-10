@@ -42,11 +42,11 @@ export function TimeOfDaySlider({
         "fixed bottom-6 left-1/2 -translate-x-1/2 z-40",
         "flex items-center gap-3 px-5 py-3",
         "rounded-full",
-        "glass-warm",
+        "bg-white/90 ring-1 ring-border backdrop-blur-md",
         "shadow-[0_8px_32px_-8px_rgba(0,0,0,0.12)]",
       )}
     >
-      <Sun className="h-4 w-4 text-gold-deep shrink-0" strokeWidth={1.5} />
+      <Sun className="h-4 w-4 text-sulphur-deep shrink-0" strokeWidth={1.5} />
 
       <div className="flex flex-col items-center gap-1.5">
         <input
@@ -56,15 +56,15 @@ export function TimeOfDaySlider({
           step={0.005}
           value={value}
           onChange={(e) => onChange(parseFloat(e.target.value))}
-          className="w-36 sm:w-48 accent-gold-deep h-1 cursor-pointer appearance-none rounded-full bg-tan/40 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-gold-deep [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(180,140,60,0.4)] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white"
+          className="w-36 sm:w-48 accent-sulphur-deep h-1 cursor-pointer appearance-none rounded-full bg-stone/40 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-sulphur-deep [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(180,140,60,0.4)] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white"
           aria-label="Time of day"
         />
-        <span className="text-[10.5px] font-serif tracking-wider text-ink-muted">
+        <span className="text-[10.5px] font-display tracking-wider text-ink-3">
           {label}
         </span>
       </div>
 
-      <Moon className="h-4 w-4 text-ink-muted shrink-0" strokeWidth={1.5} />
+      <Moon className="h-4 w-4 text-ink-3 shrink-0" strokeWidth={1.5} />
     </motion.div>
   )
 }

@@ -26,7 +26,7 @@ export function LoadingOverlay({
             className="absolute inset-0 opacity-[0.05]"
             style={{
               background:
-                "radial-gradient(ellipse 50% 40% at 50% 50%, var(--gold), transparent 70%)",
+                "radial-gradient(ellipse 50% 40% at 50% 50%, var(--sulphur), transparent 70%)",
             }}
           />
 
@@ -40,26 +40,26 @@ export function LoadingOverlay({
                   repeat: Infinity,
                   ease: "linear",
                 }}
-                className="h-full w-full border border-tan rounded-md"
+                className="h-full w-full border border-stone rounded-md"
                 style={{ transformStyle: "preserve-3d" }}
               />
             </div>
 
             <div className="text-center">
-              <p className="font-serif text-[15px] text-ink-soft italic">
+              <p className="font-display text-[15px] text-ink-2">
                 Preparing your room…
               </p>
               {progress > 0 && progress < 100 && (
-                <p className="mt-1 text-[12px] text-ink-muted tabular-nums">
+                <p className="mt-1 text-[12px] text-ink-3 tabular-nums">
                   {progress}%
                 </p>
               )}
             </div>
 
             {/* Progress bar */}
-            <div className="w-48 h-[2px] rounded-full bg-tan/50 overflow-hidden">
+            <div className="w-48 h-[2px] rounded-full bg-stone/50 overflow-hidden">
               <motion.div
-                className="h-full bg-gold/50 rounded-full"
+                className="h-full bg-sulphur/50 rounded-full"
                 initial={{ width: "0%" }}
                 animate={{
                   width: progress > 0 ? `${progress}%` : "30%",

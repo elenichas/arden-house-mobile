@@ -31,7 +31,7 @@ type Props = {
 
 /**
  * A slide-up panel that shows the touchpoint details + a preview of the
- * Prelude chapter options. For now it renders a rich placeholder that
+ * Aspra app chapter options. For now it renders a rich placeholder that
  * mirrors the structure of the mobile chapter screens. Once connected,
  * this will embed the actual <ChapterBed>, <ChapterBar>, etc.
  */
@@ -58,13 +58,13 @@ export function TouchpointPanel({ touchpointId, onClose }: Props) {
               "fixed bottom-0 inset-x-0 sm:inset-x-auto sm:right-4 z-50",
               "w-full sm:max-w-sm",
               "rounded-t-[24px] overflow-hidden",
-              "glass-card backdrop-blur-2xl",
+              "bg-white ring-1 ring-border backdrop-blur-2xl",
               "shadow-[0_-20px_60px_-20px_rgba(0,0,0,0.12)]",
             )}
           >
             {/* Handle */}
             <div className="flex justify-center pt-3 pb-1">
-              <div className="h-1 w-10 rounded-full bg-tan" />
+              <div className="h-1 w-10 rounded-full bg-stone" />
             </div>
 
             {/* Header */}
@@ -73,16 +73,16 @@ export function TouchpointPanel({ touchpointId, onClose }: Props) {
                 {(() => {
                   const Icon = iconMap[tp.icon] ?? Sparkles
                   return (
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gold/10">
-                      <Icon className="h-5 w-5 text-gold-deep" strokeWidth={1.4} />
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sulphur/10">
+                      <Icon className="h-5 w-5 text-sulphur-deep" strokeWidth={1.4} />
                     </div>
                   )
                 })()}
                 <div>
-                  <h2 className="font-serif text-[18px] text-ink">
+                  <h2 className="font-display text-[18px] text-ink">
                     {tp.label}
                   </h2>
-                  <p className="mt-0.5 text-[12px] text-ink-muted leading-relaxed max-w-[260px]">
+                  <p className="mt-0.5 text-[12px] text-ink-3 leading-relaxed max-w-[260px]">
                     {tp.description}
                   </p>
                 </div>
@@ -92,10 +92,10 @@ export function TouchpointPanel({ touchpointId, onClose }: Props) {
                 onClick={onClose}
                 className={cn(
                   "flex h-8 w-8 items-center justify-center rounded-full",
-                  "bg-beige hover:bg-tan transition-colors duration-300",
+                  "bg-chalk-2 hover:bg-stone transition-colors duration-300",
                 )}
               >
-                <X className="h-4 w-4 text-ink-soft" />
+                <X className="h-4 w-4 text-ink-2" />
               </button>
             </div>
 
@@ -106,21 +106,21 @@ export function TouchpointPanel({ touchpointId, onClose }: Props) {
                   key={item.label}
                   className={cn(
                     "flex items-center justify-between px-4 py-3.5 rounded-[14px]",
-                    "glass-soft",
-                    "hover:bg-beige/60 transition-colors duration-300",
+                    "bg-chalk-2",
+                    "hover:bg-chalk-2/60 transition-colors duration-300",
                     "cursor-pointer group",
                   )}
                 >
                   <div>
-                    <p className="font-serif text-[14px] text-ink">
+                    <p className="font-display text-[14px] text-ink">
                       {item.label}
                     </p>
-                    <p className="mt-0.5 text-[11.5px] text-ink-muted">
+                    <p className="mt-0.5 text-[11.5px] text-ink-3">
                       {item.hint}
                     </p>
                   </div>
                   <ChevronRight
-                    className="h-4 w-4 text-ink-muted/40 group-hover:text-ink-soft transition-colors"
+                    className="h-4 w-4 text-ink-3/40 group-hover:text-ink-2 transition-colors"
                     strokeWidth={1.5}
                   />
                 </div>
@@ -131,11 +131,11 @@ export function TouchpointPanel({ touchpointId, onClose }: Props) {
                 type="button"
                 className={cn(
                   "w-full mt-4 py-3.5 rounded-[14px]",
-                  "bg-terracotta hover:bg-terracotta/90 transition-colors duration-300",
-                  "font-serif text-[14px] tracking-wide text-cream",
+                  "bg-sea hover:bg-sea/90 transition-colors duration-300",
+                  "font-display text-[14px] tracking-wide text-white",
                 )}
               >
-                Customise in Prelude
+                Customise in the app
               </button>
             </div>
           </motion.div>

@@ -1,10 +1,10 @@
 /**
  * Touchpoint definitions — each maps to a chapter / feature from the
- * Prelude experience. Positions are in world-space units (after auto-
+ * Aspra app experience. Positions are in world-space units (after auto-
  * centering and scaling). Adjust these once you load your actual room
  * model to place them on the bed, minibar, window, etc.
  *
- * The `chapter` field links to the matching Prelude chapter so the
+ * The `chapter` field links to the matching Aspra app chapter so the
  * panel can show the same preference controls the mobile app uses.
  */
 export type TouchpointId =
@@ -20,7 +20,7 @@ export type TouchpointDef = {
   label: string
   /** World-space position [x, y, z]. Adjust to your model. */
   position: [number, number, number]
-  /** Which Prelude chapter (or section) this touchpoint opens. */
+  /** Which Aspra app chapter (or section) this touchpoint opens. */
   chapter: string
   /** Short description shown in the panel header. */
   description: string
@@ -35,7 +35,7 @@ export const touchpoints: TouchpointDef[] = [
     position: [-1.85, -0.29, 1.21],
     chapter: "bed",
     description:
-      "Mattress firmness, pillow type, duvet weight, linen fabric — everything about how you'll sleep.",
+      "Mattress firmness, pillow type, duvet weight, and linen. Choose how you sleep.",
     icon: "bed-double",
   },
   {
@@ -80,7 +80,7 @@ export const touchpoints: TouchpointDef[] = [
     position: [-2.15, -0.01, -1.3],
     chapter: "atmosphere",
     description:
-      "Towel warming, bath amenities, robes — the details that matter.",
+      "Towel warming, bath amenities, and robes, set up before you arrive.",
     icon: "bath",
   },
 ]

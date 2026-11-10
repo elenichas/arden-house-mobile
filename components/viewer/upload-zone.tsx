@@ -57,10 +57,10 @@ export function UploadZone({ onFile }: { onFile: (file: File) => void }) {
         transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 0.61, 0.36, 1] }}
         className="text-center"
       >
-        <h1 className="font-serif text-[28px] leading-tight tracking-tight text-ink">
+        <h1 className="font-display text-[28px] leading-tight tracking-tight text-ink">
           Room Viewer
         </h1>
-        <p className="mt-2 max-w-xs font-serif italic text-[15px] text-ink-muted leading-relaxed">
+        <p className="mt-2 max-w-xs font-display text-[15px] text-ink-3 leading-relaxed">
           Upload a .glb model of your hotel room to explore it in 3D with interactive touchpoints.
         </p>
       </motion.div>
@@ -83,14 +83,14 @@ export function UploadZone({ onFile }: { onFile: (file: File) => void }) {
           "w-full max-w-sm aspect-[4/3] rounded-[22px] cursor-pointer",
           "transition-all duration-500 ease-out",
           dragging
-            ? "border-2 border-dashed border-gold/60 bg-gold/[0.08]"
-            : "border border-dashed border-tan bg-cream-soft hover:border-gold/40 hover:bg-beige/50",
+            ? "border-2 border-dashed border-sulphur/60 bg-sulphur/[0.08]"
+            : "border border-dashed border-stone bg-chalk-2 hover:border-sulphur/40 hover:bg-chalk-2/50",
         )}
       >
         <div
           className={cn(
             "flex h-16 w-16 items-center justify-center rounded-full transition-colors duration-500",
-            dragging ? "bg-gold/15 text-gold-deep" : "bg-beige text-ink-muted group-hover:text-ink-soft",
+            dragging ? "bg-sulphur/15 text-sulphur-deep" : "bg-chalk-2 text-ink-3 group-hover:text-ink-2",
           )}
         >
           {dragging ? (
@@ -101,10 +101,10 @@ export function UploadZone({ onFile }: { onFile: (file: File) => void }) {
         </div>
 
         <div className="text-center px-6">
-          <p className="font-serif text-[15px] text-ink-soft">
+          <p className="font-display text-[15px] text-ink-2">
             {dragging ? "Drop your model here" : "Drag & drop a .glb file"}
           </p>
-          <p className="mt-1 text-[12px] text-ink-muted">
+          <p className="mt-1 text-[12px] text-ink-3">
             or click to browse · up to {MAX_SIZE_MB} MB
           </p>
         </div>
@@ -137,9 +137,9 @@ export function UploadZone({ onFile }: { onFile: (file: File) => void }) {
         transition={{ duration: 0.8, delay: 0.5 }}
         className="max-w-xs text-center space-y-1"
       >
-        <p className="text-[11.5px] text-ink-muted/70 leading-relaxed">
+        <p className="text-[11.5px] text-ink-3/70 leading-relaxed">
           For best results, optimise your Rhino model through Blender and export
-          as a Draco-compressed .glb — target under 50 MB and 300K triangles.
+          as a Draco-compressed .glb. Aim for under 50 MB and 300K triangles.
         </p>
       </motion.div>
     </div>

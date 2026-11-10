@@ -6,28 +6,28 @@ product
 
 ## Users
 
-Business hotel guests using a mobile app before or during a stay. They may have an existing reservation, want to book a room, or be returning from a previous visit. Their context is practical and time-sensitive: checking stay details, comparing rooms, setting arrival preferences, requesting services, and getting quick concierge help.
+Leisure guests of a small luxury sea hotel on Milos, Greece. They use the app on a phone: at home while planning, on a ferry or a sunbed during the stay, and at home again afterwards. Some are booking for the first time, some already have a booking, and some have stayed before.
 
-## Product Purpose
+## Product purpose
 
-Arden House is a public-safe demo of a premium business hotel mobile app. It shows a complete guest journey using organized mock data rather than a production database. Success means the app feels polished, credible, and useful while avoiding any confidential client references or hardcoded presentation-only dead ends.
+Aspra is a public-safe demo of a hotel guest app that covers the whole trip, from booking to long after check out. Guests can book and customise a stay, record preferences that carry between stays, plan days on the island, and message Nefeli, the concierge, at any hour. Success means each path is complete and every screen tells the guest something specific about their trip.
 
-## Brand Personality
+## Brand personality
 
-Curated, composed, practical. The experience should feel quietly luxurious, editorial, and attentive without becoming vague, ornamental, or slow to use.
+Calm, exact, warm. The voice of a good host who knows the island: names, times, distances and prices rather than adjectives.
 
 ## Anti-references
 
-Avoid confidential-client resemblance, generic luxury hotel tropes, AI SaaS hero grammar, overused glassmorphism, decorative card grids, unclear poetic copy, low-contrast muted text, and flows that only work for a recorded demo.
+Generic white-and-blue Santorini postcards, cream "luxury" backgrounds, glass that hurts legibility, identical card grids, tracked uppercase eyebrows on every section, AI hero grammar, vague poetic copy, flows that dead-end in a demo.
 
-## Design Principles
+## Design principles
 
-1. Make every path complete: guests can move forward, go back, and return home without hidden assumptions.
-2. Let luxury serve utility: visual polish should clarify stay details, choices, and service actions.
-3. Keep the copy curated but concrete: elegant language must still explain what the app does.
-4. Preserve a public-safe identity: names, visuals, and flows should feel distinct from the confidential prototype.
-5. Design for phone use first: touch targets, contrast, and layout must hold up on narrow screens.
+1. Make every path complete: guests can move forward, go back, and return to the start.
+2. Personalisation must change what the guest sees, not just store a setting.
+3. Copy is concrete: times, prices, distances, names. Sentence case, no em dashes.
+4. The trip has three stages, before, during and after, and the app changes with them.
+5. Phone first: 44px touch targets, high contrast in sunlight, safe-area aware.
 
-## Accessibility & Inclusion
+## Accessibility and inclusion
 
-Target WCAG AA for contrast, focus visibility, semantic controls, and keyboard access. Support reduced-motion preferences, avoid color-only state communication, and keep text legible in both the default light mode and jet-lag dark mode.
+Target WCAG AA for contrast, visible focus, semantic controls and keyboard access. Respect reduced motion. Never communicate state with colour alone.

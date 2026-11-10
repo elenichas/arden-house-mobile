@@ -28,12 +28,12 @@ export function ViewerHeader({ fileName, onReset }: Props) {
         className={cn(
           "pointer-events-auto flex items-center gap-2.5",
           "rounded-full px-3 py-2",
-          "glass-warm",
-          "text-ink-soft hover:text-ink transition-colors duration-300",
+          "bg-white/90 ring-1 ring-border backdrop-blur-md",
+          "text-ink-2 hover:text-ink transition-colors duration-300",
         )}
       >
         <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
-        <span className="font-serif text-[13px] tracking-wide">Arden House</span>
+        <span className="font-display text-[13px] tracking-wide">Aspra</span>
       </motion.a>
 
       {/* Centre — file name */}
@@ -45,11 +45,11 @@ export function ViewerHeader({ fileName, onReset }: Props) {
           className={cn(
             "pointer-events-auto flex items-center gap-2",
             "rounded-full px-4 py-2",
-            "glass-warm",
+            "bg-white/90 ring-1 ring-border backdrop-blur-md",
           )}
         >
-          <Box className="h-3.5 w-3.5 text-gold-deep" strokeWidth={1.5} />
-          <span className="font-serif text-[12px] text-ink-muted truncate max-w-[180px]">
+          <Box className="h-3.5 w-3.5 text-sulphur-deep" strokeWidth={1.5} />
+          <span className="font-display text-[12px] text-ink-3 truncate max-w-[180px]">
             {fileName}
           </span>
         </motion.div>
@@ -66,12 +66,12 @@ export function ViewerHeader({ fileName, onReset }: Props) {
           className={cn(
             "pointer-events-auto flex items-center gap-2",
             "rounded-full px-3 py-2",
-            "glass-warm",
-            "text-ink-muted hover:text-ink-soft transition-colors duration-300",
+            "bg-white/90 ring-1 ring-border backdrop-blur-md",
+            "text-ink-3 hover:text-ink-2 transition-colors duration-300",
           )}
         >
           <RotateCcw className="h-3.5 w-3.5" strokeWidth={1.5} />
-          <span className="font-serif text-[12px] tracking-wide">New model</span>
+          <span className="font-display text-[12px] tracking-wide">New model</span>
         </motion.button>
       )}
     </header>

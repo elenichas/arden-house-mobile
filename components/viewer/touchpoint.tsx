@@ -85,8 +85,8 @@ export function Touchpoint({ id: _id, label, position, active, onClick }: Props)
             className={cn(
               "absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap",
               "rounded-lg px-3 py-1.5",
-              "font-serif text-[12px] tracking-wide text-ink",
-              "glass-card",
+              "font-display text-[12px] tracking-wide text-ink",
+              "bg-white ring-1 ring-border",
               "shadow-[0_8px_24px_-8px_rgba(0,0,0,0.12)]",
               "transition-all duration-300",
               hovered || active

@@ -1,7 +1,7 @@
-import { ArdenApp } from "@/components/arden/arden-app"
-import type { GuestType } from "@/components/arden/types"
+import { AspraApp } from "@/components/aspra/app"
+import type { GuestKind } from "@/components/aspra/data"
 
-const guestTypes = new Set<GuestType>(["booked", "new", "returning"])
+const kinds = new Set<GuestKind>(["new", "booked", "returning"])
 
 export default async function Page({
   searchParams,
@@ -9,10 +9,6 @@ export default async function Page({
   searchParams?: Promise<{ guest?: string }>
 }) {
   const params = await searchParams
-  const guest = params?.guest
-  const initialGuestType = guestTypes.has(guest as GuestType)
-    ? (guest as GuestType)
-    : null
-
-  return <ArdenApp initialGuestType={initialGuestType} />
+  const guest = params?.guest as GuestKind | undefined
+  return <AspraApp initialKind={guest && kinds.has(guest) ? guest : null} />
 }
