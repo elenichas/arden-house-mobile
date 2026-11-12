@@ -1,15 +1,12 @@
 # Aspra, Milos
 
-Aspra is a phone-first guest app for a fictional 22-suite sea hotel cut into the white volcanic rock of Milos, Greece. It covers the whole trip: booking, preparing the suite, planning days on the island, a 24-hour AI concierge, and what the guest keeps after they fly home.
+Aspra is a phone-first guest app for a fictional sea hotel cut into the white volcanic rock of Milos, Greece. It covers the whole trip: booking, preparing the suite, planning days on the island, a 24-hour AI concierge, and what the guest keeps after they fly home.
 
 All guests, bookings and prices are fictional. No payment is taken and no request is sent anywhere.
 
 ![The gate on a desktop screen: a photo of the hotel in the cliffs, with three ways in](docs/screenshots/gate-desktop.jpg)
 
-| Today, before the stay | Plan | Nefeli, the concierge |
-| --- | --- | --- |
-| ![Today tab on a phone, showing the countdown to the stay](docs/screenshots/today-phone.jpg) | ![Plan tab on a phone, showing the days of the stay](docs/screenshots/plan-phone.jpg) | ![Nefeli tab on a phone, showing suggested questions](docs/screenshots/nefeli-phone.jpg) |
-
+ 
 Built with Next.js 16, React 19, Tailwind CSS 4, Framer Motion and React Three Fiber.
 
 ## Guest journeys
