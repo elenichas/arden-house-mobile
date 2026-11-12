@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Minus, Plus, Thermometer } from "lucide-react"
+import { ChevronDown, Minus, Plus, Thermometer } from "lucide-react"
 import { cn } from "@/lib/utils"
 import {
   dietOptions,
@@ -116,7 +116,47 @@ export function TripPrefs({ prefs, onChange }: { prefs: Prefs; onChange: (p: Par
 }
 
 /** How the suite is set up before arrival. */
-export function SuitePrefs({ prefs, onChange }: { prefs: Prefs; onChange: (p: Partial<Prefs>) => void }) {
+export function SuitePrefs({
+  prefs,
+  onChange,
+  compact = false,
+}: {
+  prefs: Prefs
+  onChange: (p: Partial<Prefs>) => void
+  /** Show bed, pillows and temperature first, and keep the rest behind "More choices". */
+  compact?: boolean
+}) {
+  const [more, setMore] = React.useState(!compact)
+  const temperature = (
+      <Field label="Room temperature on arrival">
+        <div className="flex items-center justify-between rounded-xl glass px-4 py-2">
+          <span className="flex items-center gap-2 text-[15px] text-ink-2">
+            <Thermometer className="size-4" aria-hidden /> Set to
+          </span>
+          <div className="flex items-center gap-3">
+            <IconButton
+              label="Cooler"
+              disabled={prefs.temperature <= 18}
+              onClick={() => onChange({ temperature: prefs.temperature - 1 })}
+              className="size-11 border border-ink/15 disabled:opacity-35"
+            >
+              <Minus className="size-4" />
+            </IconButton>
+            <output aria-live="polite" className="w-12 text-center text-[18px] font-semibold tabular-nums">
+              {prefs.temperature}°C
+            </output>
+            <IconButton
+              label="Warmer"
+              disabled={prefs.temperature >= 26}
+              onClick={() => onChange({ temperature: prefs.temperature + 1 })}
+              className="size-11 border border-ink/15 disabled:opacity-35"
+            >
+              <Plus className="size-4" />
+            </IconButton>
+          </div>
+        </div>
+      </Field>
+  )
   return (
     <div>
       <Field label="Bed">
@@ -129,21 +169,40 @@ export function SuitePrefs({ prefs, onChange }: { prefs: Prefs; onChange: (p: Pa
         </div>
       </Field>
 
-      <Field label="Bed linen">
+      <Field label="Pillows">
         <div className="flex flex-wrap gap-2">
-          {linenOptions.map((o) => (
-            <Chip key={o.id} selected={prefs.linen === o.id} onClick={() => onChange({ linen: o.id })}>
-              <span className="size-3.5 rounded-full border border-ink/20" style={{ background: o.swatch }} aria-hidden />
+          {pillowOptions.map((o) => (
+            <Chip key={o.id} selected={prefs.pillow === o.id} onClick={() => onChange({ pillow: o.id })}>
               {o.label}
             </Chip>
           ))}
         </div>
       </Field>
 
-      <Field label="Pillows">
+      {temperature}
+
+      {!more && (
+        <button
+          type="button"
+          aria-expanded={false}
+          onClick={() => setMore(true)}
+          className="mb-7 flex min-h-14 w-full items-center justify-between gap-3 rounded-2xl glass px-4 py-3 text-left"
+        >
+          <span>
+            <span className="block text-[15px] font-medium text-ink">More choices</span>
+            <span className="block text-[13.5px] text-ink-3">Linen, scent, flowers, curtains, table, fridge and notes</span>
+          </span>
+          <ChevronDown className="size-5 shrink-0 text-ink-3" aria-hidden />
+        </button>
+      )}
+
+      {more && (
+        <>
+      <Field label="Bed linen">
         <div className="flex flex-wrap gap-2">
-          {pillowOptions.map((o) => (
-            <Chip key={o.id} selected={prefs.pillow === o.id} onClick={() => onChange({ pillow: o.id })}>
+          {linenOptions.map((o) => (
+            <Chip key={o.id} selected={prefs.linen === o.id} onClick={() => onChange({ linen: o.id })}>
+              <span className="size-3.5 rounded-full border border-ink/20" style={{ background: o.swatch }} aria-hidden />
               {o.label}
             </Chip>
           ))}
@@ -200,35 +259,6 @@ export function SuitePrefs({ prefs, onChange }: { prefs: Prefs; onChange: (p: Pa
         </div>
       </Field>
 
-      <Field label="Room temperature on arrival">
-        <div className="flex items-center justify-between rounded-xl glass px-4 py-2">
-          <span className="flex items-center gap-2 text-[15px] text-ink-2">
-            <Thermometer className="size-4" aria-hidden /> Set to
-          </span>
-          <div className="flex items-center gap-3">
-            <IconButton
-              label="Cooler"
-              disabled={prefs.temperature <= 18}
-              onClick={() => onChange({ temperature: prefs.temperature - 1 })}
-              className="size-10 border border-ink/15 disabled:opacity-35"
-            >
-              <Minus className="size-4" />
-            </IconButton>
-            <output aria-live="polite" className="w-12 text-center text-[18px] font-semibold tabular-nums">
-              {prefs.temperature}°C
-            </output>
-            <IconButton
-              label="Warmer"
-              disabled={prefs.temperature >= 26}
-              onClick={() => onChange({ temperature: prefs.temperature + 1 })}
-              className="size-10 border border-ink/15 disabled:opacity-35"
-            >
-              <Plus className="size-4" />
-            </IconButton>
-          </div>
-        </div>
-      </Field>
-
       <Field label="Anything else" hint="Allergies, a surprise, a habit we should know.">
         <textarea
           value={prefs.note}
@@ -238,6 +268,8 @@ export function SuitePrefs({ prefs, onChange }: { prefs: Prefs; onChange: (p: Pa
           className="w-full resize-none rounded-xl glass px-4 py-3 text-[15px] text-ink placeholder:text-ink-3 focus:border-sea focus:outline-none"
         />
       </Field>
+        </>
+      )}
     </div>
   )
 }

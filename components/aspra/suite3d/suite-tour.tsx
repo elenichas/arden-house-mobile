@@ -228,7 +228,7 @@ export function SuiteTour({
       className="on-dark fixed inset-0 z-[var(--z-sheet)] flex w-full flex-col overflow-hidden bg-obsidian text-white"
     >
       {/* 3D view */}
-      <div className="absolute inset-0" onPointerDown={() => setHint(false)}>
+      <div className="absolute inset-0" inert={webgl && !ready} onPointerDown={() => setHint(false)}>
         {webgl ? (
           <SuiteScene
             key={quality}
@@ -254,7 +254,14 @@ export function SuiteTour({
       <AnimatePresence>
         {webgl && !ready && (
           <motion.div initial={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.7 }} className="absolute inset-0 z-40 grid place-items-center bg-obsidian">
-            <div className="flex flex-col items-center gap-4">
+            <IconButton
+              label="Close 3D view"
+              onClick={() => onClose(false)}
+              className="absolute left-4 top-[max(env(safe-area-inset-top),12px)] border border-white/20 text-white hover:bg-white/10"
+            >
+              <X className="size-5" />
+            </IconButton>
+            <div role="status" className="flex flex-col items-center gap-4 px-8 text-center">
               <svg viewBox="0 0 40 40" className="size-12" aria-hidden>
                 <motion.path
                   d="M10 33V18a10 10 0 0 1 20 0v15"
@@ -267,14 +274,18 @@ export function SuiteTour({
                 />
                 <path d="M5 33h30" stroke="var(--sulphur)" strokeWidth="1.6" strokeLinecap="round" />
               </svg>
-              <p className="text-[14px] text-white/75">Opening your suite</p>
+              <p className="text-[15px] text-white/85">Building your suite</p>
+              <p className="max-w-[26ch] text-[13px] leading-snug text-white/60">This takes a few seconds the first time. Your choices are ready as soon as the room appears.</p>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* top bar */}
-      <div className="pointer-events-none relative z-30 bg-gradient-to-b from-obsidian/75 via-obsidian/35 to-transparent px-4 pb-10 pt-[max(env(safe-area-inset-top),12px)]">
+      <div
+        inert={webgl && !ready}
+        className="pointer-events-none relative z-30 bg-gradient-to-b from-obsidian/75 via-obsidian/35 to-transparent px-4 pb-10 pt-[max(env(safe-area-inset-top),12px)]"
+      >
         <div className="flex items-center gap-2">
           <IconButton label="Close 3D view" onClick={() => onClose(false)} className="glass-smoke pointer-events-auto text-white hover:bg-obsidian/60">
             <X className="size-5" />
@@ -388,7 +399,11 @@ export function SuiteTour({
       <div className="flex-1" />
 
       {/* bottom: setting panel, or the dock. On wide screens the panel sits at the right. */}
-      <div className={cn("relative z-30", setting && "lg:absolute lg:bottom-6 lg:right-6 lg:top-[140px] lg:w-[420px]")}>
+      <div
+        // Nothing below can be reached, by touch or keyboard, until the room is on screen.
+        inert={webgl && !ready}
+        className={cn("relative z-30", setting && "lg:absolute lg:bottom-6 lg:right-6 lg:top-[140px] lg:w-[420px]")}
+      >
         <AnimatePresence mode="wait" initial={false}>
           {setting ? (
             <motion.section

@@ -1,6 +1,6 @@
 # Aspra, Milos
 
-Aspra is a phone-first guest app for a fictional sea hotel cut into the white volcanic rock of Milos, Greece. It covers the whole trip: booking, preparing the suite, planning days on the island, a 24-hour AI concierge, and what the guest keeps after they fly home.
+Aspra is a phone-first guest app for a fictional seven-suite sea hotel cut into the white volcanic rock of Milos, Greece. It covers the whole trip: booking, preparing the suite, planning days on the island, a 24-hour AI concierge, and what the guest keeps after they fly home.
 
 All guests, bookings and prices are fictional. No payment is taken and no request is sent anywhere.
 
@@ -13,18 +13,20 @@ Built with Next.js 16, React 19, Tailwind CSS 4, Framer Motion and React Three F
 
 The gate offers three ways in. You can also open one directly with `?guest=new`, `?guest=booked` or `?guest=returning`.
 
-- **New guest.** Choose a suite, pick dates and guests, add extras (boat or car transfer, early arrival, late check out, a celebration), tell us your pace and interests, set up the suite (pillows, scent, fridge, temperature), then confirm.
+- **New guest.** Choose one of the seven suites, pick dates on a calendar that shows which nights are free, add extras (boat or car transfer, early arrival, late check out, a celebration), tell us your pace and interests, set up the suite (bed, pillows and temperature first, the rest under "More choices"), then check and confirm. Each part of the summary has a link to change it.
 - **Booked guest.** Find the booking (ASP-2614, Weiss), see the countdown and arrival, and prepare the stay in two short steps.
 - **Returning guest.** See moments from the last stay and the preferences we kept, then book the same suite again with them applied.
 
 Inside the app there are four tabs:
 
 - **Today** changes with the trip. A preview switch shows the three stages: before (countdown, getting here, suite setup, packing list, Greek words), on Milos (conditions, the day's timeline, one-tap requests, experiences picked from your preferences) and after (recipe, island pantry shipped home, monthly letter, rebooking).
-- **Plan** shows each day of the stay. Add experiences ranked by your interests, ask Nefeli to plan a day, and change extras until 48 hours before arrival.
-- **Nefeli** is the concierge, available at any hour. Replies can include actions such as adding an experience to the plan or sending a request to the team.
+- **Plan** shows each day of the stay and opens on today once you are on Milos. Add experiences ranked by your interests, ask Nefeli to plan a day, and see what the plan costs so far. Adding and removing can be undone.
+- **Nefeli** is the AI concierge, available at any hour. Replies check your plan first, and can include actions such as adding an experience or sending a request to the team.
 - **Journal** fills with each day of the stay and keeps past stays.
 
-Your profile (top right) holds the preferences that carry from stay to stay.
+Your profile (top right) holds the preferences that carry from stay to stay. "Your stay", reached from Today, Plan and the profile, keeps the booking in one place: dates, cost, extras and suite setup.
+
+The trip is saved in the browser, so a refresh opens the app where you left it. A half-finished booking is kept too. "Switch sample guest" in the profile clears it and returns to the gate.
 
 ## Your suite in 3D
 
@@ -89,7 +91,8 @@ pnpm build
 
 - `components/aspra/data.ts` has the hotel, suites, experiences, extras, sample guests and helpers.
 - `components/aspra/store.tsx` holds app state: guest, booking, preferences, plan, requests.
-- `components/aspra/entry/` has the gate, booking flow, booked and returning entries.
+- `components/aspra/entry/` has the gate, booking flow, stay calendar, booked and returning entries.
+- `components/aspra/stay-sheet.tsx` is the "Your stay" screen.
 - `components/aspra/tabs/` has Today, Plan, Nefeli and Journal.
 - `components/aspra/suite3d/` has the 3D suite.
 - `app/api/chat/route.ts` is the concierge route.

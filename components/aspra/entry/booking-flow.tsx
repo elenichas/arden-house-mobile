@@ -15,6 +15,7 @@ import {
   newRef,
   pillowOptions,
   scentOptions,
+  stayIsFree,
   suiteById,
   suites,
   type Booking,
@@ -22,7 +23,8 @@ import {
   type Prefs,
   type SuiteId,
 } from "../data"
-import { Button, Counter, EASE, FlowHeader, FullScreen, Photo, Segmented, Step } from "../ui"
+import { Button, Counter, EASE, FlowHeader, FullScreen, Photo, Segmented, Sheet, Step, TextLink } from "../ui"
+import { StayCalendar } from "./stay-calendar"
 import { ExtrasPicker, SuitePrefs, TripPrefs } from "../shared"
 import { SuiteTour } from "../suite3d/suite-tour"
 
@@ -41,11 +43,11 @@ const titles: Record<StepId, string> = {
 }
 
 const intros: Record<StepId, string> = {
-  suite: "All 22 suites face the sea. They differ in size, privacy and water.",
-  dates: "The sea is calmest in June and late September. July and August bring the meltemi wind.",
+  suite: "Seven suites, all facing the sea: four cave suites, two with a plunge pool and one villa.",
+  dates: "Tap the day you arrive, then the day you leave. The sea is calmest in June and late September.",
   extras: "Add what you need now. You can change any of it until 48 hours before arrival.",
   trip: "This shapes what Nefeli, our concierge, suggests each day.",
-  room: "We set this up before you arrive. Housekeeping sees it, nobody else.",
+  room: "Three choices now. The rest can wait: change any of it until you arrive.",
   review: "Nothing is charged in this demo. A real booking takes a 30% deposit.",
 }
 
@@ -60,44 +62,130 @@ export function BookingFlow({
 }) {
   const store = useAspra()
   const steps = mode === "new" ? NEW_STEPS : RETURN_STEPS
-  const [i, setI] = React.useState(0)
   const [dir, setDir] = React.useState(1)
   const [confirmed, setConfirmed] = React.useState<Booking | null>(null)
 
-  const defaultIn = mode === "return" ? "2027-09-17" : "2027-06-11"
-  const [draft, setDraft] = React.useState<Booking>({
-    ref: "",
-    suiteId: mode === "return" ? store.pastStay?.suiteId ?? "cave" : "pool",
-    checkIn: defaultIn,
-    checkOut: addDays(defaultIn, mode === "return" ? 6 : 5),
-    adults: 2,
-    children: 0,
-    extras: mode === "return" ? ["car-transfer"] : [],
-    arrival: { by: "air", detail: "Sky Express from Athens", time: "12:35" },
+  // Choices are kept on this device, so closing the flow or refreshing does not lose them.
+  const draftKey = `aspra-draft-v1:${mode}`
+  const [start] = React.useState(() => {
+    const defaultIn = mode === "return" ? "2027-09-17" : "2027-06-11"
+    const fresh = {
+      restored: false,
+      i: 0,
+      draft: {
+        ref: "",
+        suiteId: mode === "return" ? store.pastStay?.suiteId ?? "cave" : "pool",
+        checkIn: defaultIn,
+        checkOut: addDays(defaultIn, mode === "return" ? 6 : 5),
+        adults: 2,
+        children: 0,
+        extras: mode === "return" ? ["car-transfer"] : [],
+        arrival: { by: "air", detail: "Sky Express from Athens", time: "12:35" },
+      } as Booking,
+      prefs: store.prefs,
+      name: { first: store.guest.firstName, last: store.guest.lastName, email: store.guest.email },
+    }
+    try {
+      const raw = window.localStorage.getItem(draftKey)
+      if (!raw) return fresh
+      const saved = JSON.parse(raw) as Partial<typeof fresh>
+      if (!saved.draft || !saved.prefs || !saved.name) return fresh
+      return { restored: true, i: Math.min(steps.length - 1, Math.max(0, saved.i ?? 0)), draft: saved.draft, prefs: saved.prefs, name: saved.name }
+    } catch {
+      return fresh
+    }
   })
-  const [prefs, setPrefs] = React.useState<Prefs>(store.prefs)
+  const [i, setI] = React.useState(start.i)
+  const [draft, setDraft] = React.useState<Booking>(start.draft)
+  const [prefs, setPrefs] = React.useState<Prefs>(start.prefs)
   const [tourSuite, setTourSuite] = React.useState<SuiteId | null>(null)
-  const [name, setName] = React.useState({ first: store.guest.firstName, last: store.guest.lastName, email: store.guest.email })
+  const [name, setName] = React.useState(start.name)
+  const [keptNotice, setKeptNotice] = React.useState(start.restored)
+  const [leaving, setLeaving] = React.useState(false)
+  /** True after the guest jumps back from the review to change one thing. */
+  const [returnToReview, setReturnToReview] = React.useState(false)
+  const [attempted, setAttempted] = React.useState(false)
+
+  const dirty = i > 0 || start.restored || draft !== start.draft || prefs !== start.prefs || name !== start.name
+
+  React.useEffect(() => {
+    if (!dirty || confirmed) return
+    try {
+      window.localStorage.setItem(draftKey, JSON.stringify({ i, draft, prefs, name }))
+    } catch {
+      // Storage can be refused in private windows. The flow still works.
+    }
+  }, [dirty, confirmed, draftKey, i, draft, prefs, name])
+
+  const clearDraft = () => {
+    try {
+      window.localStorage.removeItem(draftKey)
+    } catch {
+      // Nothing to clear.
+    }
+  }
 
   const step = steps[i]
   const nights = bookingTotal(draft).nights
+  const scrollTop = () => {
+    if (typeof document !== "undefined") document.getElementById("flow-scroll")?.scrollTo({ top: 0 })
+  }
   const go = (d: number) => {
     setDir(d)
     setI((n) => Math.min(steps.length - 1, Math.max(0, n + d)))
-    if (typeof document !== "undefined") document.getElementById("flow-scroll")?.scrollTo({ top: 0 })
+    scrollTop()
+  }
+  const jump = (to: StepId) => {
+    const at = steps.indexOf(to)
+    if (at < 0) return
+    setDir(at < i ? -1 : 1)
+    setReturnToReview(to !== "review")
+    setI(at)
+    scrollTop()
   }
 
-  const canNext =
-    step !== "review" || mode === "return" || (name.first.trim().length > 0 && /.+@.+\..+/.test(name.email))
+  const datesFree = stayIsFree(draft.checkIn, draft.checkOut, draft.suiteId)
+  const errors = {
+    dates: datesFree ? "" : `The ${suiteById(draft.suiteId).name.toLowerCase()} is not free for all of those nights. Choose other dates or another suite.`,
+    first: mode === "return" || name.first.trim() ? "" : "Enter your first name.",
+    email: mode === "return" || /.+@.+\..+/.test(name.email.trim()) ? "" : "Enter an email address, such as name@example.com.",
+  }
 
   function confirm() {
+    if (errors.dates || errors.first || errors.email) {
+      setAttempted(true)
+      // Take the guest to the first thing that needs fixing.
+      const target = errors.dates ? "review-dates-error" : errors.first ? "booking-first-name" : "booking-email"
+      requestAnimationFrame(() => {
+        const el = document.getElementById(target)
+        el?.scrollIntoView({ block: "center", behavior: "smooth" })
+        el?.focus({ preventScroll: true })
+      })
+      return
+    }
     const b = { ...draft, ref: newRef() }
     store.setBooking(b)
     store.setPrefs(prefs)
     if (mode === "new") store.setGuest({ firstName: name.first.trim(), lastName: name.last.trim(), email: name.email.trim() })
     store.setPhase("before")
+    clearDraft()
     setConfirmed(b)
   }
+
+  const startOver = () => {
+    clearDraft()
+    setDraft({ ...start.draft, suiteId: mode === "return" ? store.pastStay?.suiteId ?? "cave" : "pool", checkIn: mode === "return" ? "2027-09-17" : "2027-06-11", checkOut: mode === "return" ? "2027-09-23" : "2027-06-16", adults: 2, children: 0, extras: mode === "return" ? ["car-transfer"] : [] })
+    setPrefs(store.prefs)
+    setName({ first: store.guest.firstName, last: store.guest.lastName, email: store.guest.email })
+    setKeptNotice(false)
+    setAttempted(false)
+    setReturnToReview(false)
+    setDir(-1)
+    setI(0)
+    scrollTop()
+  }
+
+  const requestClose = () => (dirty ? setLeaving(true) : onClose())
 
   if (confirmed) {
     return <Confirmed booking={confirmed} firstName={mode === "new" ? name.first : store.guest.firstName} onOpen={onDone} />
@@ -109,8 +197,8 @@ export function BookingFlow({
   return (
     <FullScreen className="flex flex-col overflow-hidden">
       <FlowHeader
-        onBack={i === 0 ? onClose : () => go(-1)}
-        onClose={onClose}
+        onBack={i === 0 ? requestClose : () => go(-1)}
+        onClose={requestClose}
         step={i}
         steps={steps.length}
         title={mode === "return" ? "Book again" : "New booking"}
@@ -121,6 +209,13 @@ export function BookingFlow({
             <div className="px-5 pb-8 pt-3">
               <h1 className="font-display text-[34px]">{titles[step]}</h1>
               <p className="mb-6 mt-2 text-[15px] leading-relaxed text-ink-2">{intros[step]}</p>
+
+              {keptNotice && (
+                <div className="mb-6 flex items-center justify-between gap-3 rounded-2xl bg-sea-wash px-4 py-3 text-[14px] text-ink">
+                  <span>We kept your choices from last time.</span>
+                  <TextLink onClick={startOver}>Start over</TextLink>
+                </div>
+              )}
 
               {step === "suite" && (
                 <SuitePicker
@@ -135,7 +230,7 @@ export function BookingFlow({
               )}
 
               {step === "dates" && (
-                <DatesStep draft={draft} setDraft={setDraft} nights={nights} />
+                <DatesStep draft={draft} setDraft={setDraft} nights={nights} error={errors.dates} />
               )}
 
               {step === "extras" && (
@@ -175,7 +270,7 @@ export function BookingFlow({
                   <Button variant="dark" block size="lg" className="mb-7" onClick={() => setTourSuite(draft.suiteId)}>
                     <Box className="size-5 text-sulphur" aria-hidden /> Set it up in 3D
                   </Button>
-                  <SuitePrefs prefs={prefs} onChange={(p) => setPrefs((x) => ({ ...x, ...p }))} />
+                  <SuitePrefs compact prefs={prefs} onChange={(p) => setPrefs((x) => ({ ...x, ...p }))} />
                 </>
               )}
 
@@ -187,6 +282,10 @@ export function BookingFlow({
                   name={name}
                   setName={setName}
                   remembered={store.pastStay?.remembered}
+                  errors={errors}
+                  attempted={attempted}
+                  onEdit={jump}
+                  canEdit={(id) => steps.includes(id)}
                 />
               )}
             </div>
@@ -197,10 +296,39 @@ export function BookingFlow({
       <FlowFooter
         nights={nights}
         draft={draft}
-        isLast={step === "review"}
-        canNext={canNext}
-        onNext={() => (step === "review" ? confirm() : go(1))}
+        label={step === "review" ? "Confirm booking" : returnToReview ? "Back to review" : "Continue"}
+        blocked={step === "dates" && !datesFree}
+        onNext={() => (step === "review" ? confirm() : returnToReview ? jump("review") : go(1))}
       />
+      <Sheet
+        open={leaving}
+        onClose={() => setLeaving(false)}
+        title="Leave this booking?"
+        footer={
+          <div className="flex gap-3">
+            <Button variant="outline" className="flex-1" onClick={onClose}>
+              Leave
+            </Button>
+            <Button className="flex-1" onClick={() => setLeaving(false)}>
+              Keep booking
+            </Button>
+          </div>
+        }
+      >
+        <p className="text-[15px] leading-relaxed text-ink-2">
+          Nothing is booked yet. Your choices stay on this device, so you can pick up where you stopped.
+        </p>
+        <div className="mt-4">
+          <TextLink
+            onClick={() => {
+              clearDraft()
+              onClose()
+            }}
+          >
+            Leave and clear my choices
+          </TextLink>
+        </div>
+      </Sheet>
       <AnimatePresence>
         {tourSuite && (
           <SuiteTour
@@ -219,14 +347,15 @@ export function BookingFlow({
 function FlowFooter({
   draft,
   nights,
-  isLast,
-  canNext,
+  label,
+  blocked,
   onNext,
 }: {
   draft: Booking
   nights: number
-  isLast: boolean
-  canNext: boolean
+  label: string
+  /** The step cannot be passed yet. The reason is shown on the step itself. */
+  blocked: boolean
   onNext: () => void
 }) {
   const t = bookingTotal(draft)
@@ -238,8 +367,8 @@ function FlowFooter({
           {suiteById(draft.suiteId).name}, {nights} {nights === 1 ? "night" : "nights"}
         </div>
       </div>
-      <Button onClick={onNext} disabled={!canNext} size="lg" className="min-w-[150px]">
-        {isLast ? "Confirm booking" : "Continue"}
+      <Button onClick={onNext} disabled={blocked} size="lg" className="min-w-[150px]">
+        {label}
       </Button>
     </div>
   )
@@ -341,56 +470,30 @@ function DatesStep({
   draft,
   setDraft,
   nights,
+  error,
 }: {
   draft: Booking
   setDraft: React.Dispatch<React.SetStateAction<Booking>>
   nights: number
+  error: string
 }) {
-  const months = [
-    { label: "May", iso: "2027-05-14" },
-    { label: "June", iso: "2027-06-11" },
-    { label: "July", iso: "2027-07-09" },
-    { label: "Aug", iso: "2027-08-13" },
-    { label: "Sept", iso: "2027-09-17" },
-    { label: "Oct", iso: "2027-10-08" },
-  ]
-  const setIn = (iso: string) => setDraft((d) => ({ ...d, checkIn: iso, checkOut: addDays(iso, nights) }))
-  const activeMonth = draft.checkIn.slice(5, 7)
+  // The longest stay from this arrival day before a sold night or the end of the season.
+  let maxNights = 2
+  while (maxNights < 14 && stayIsFree(draft.checkIn, addDays(draft.checkIn, maxNights + 1), draft.suiteId)) maxNights++
 
   return (
     <div>
-      <h2 className="mb-3 text-[16px] font-semibold">Month, 2027 season</h2>
-      <div className="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 pb-1">
-        {months.map((m) => {
-          const on = m.iso.slice(5, 7) === activeMonth
-          return (
-            <button
-              key={m.label}
-              aria-pressed={on}
-              onClick={() => setIn(m.iso)}
-              className={cn(
-                "h-11 shrink-0 rounded-full border px-5 text-[14px] font-medium transition-colors",
-                on ? "border-sea bg-sea text-white" : "border-white/80 bg-white/60 text-ink backdrop-blur-md",
-              )}
-            >
-              {m.label}
-              {(m.label === "June" || m.label === "Sept") && <span className={cn("ml-1.5", on ? "text-white/80" : "text-sea")}>calm sea</span>}
-            </button>
-          )
-        })}
-      </div>
-
-      <label className="mt-6 block">
-        <span className="mb-2 block text-[16px] font-semibold">Arrival day</span>
-        <input
-          type="date"
-          min="2027-04-24"
-          max="2027-10-20"
-          value={draft.checkIn}
-          onChange={(e) => e.target.value && setIn(e.target.value)}
-          className="h-12 w-full rounded-xl glass px-4 text-[16px] focus:border-sea focus:outline-none"
-        />
-      </label>
+      <StayCalendar
+        checkIn={draft.checkIn}
+        checkOut={draft.checkOut}
+        suiteId={draft.suiteId}
+        onChange={(checkIn, checkOut) => setDraft((d) => ({ ...d, checkIn, checkOut }))}
+      />
+      {error && (
+        <p role="alert" className="mt-3 rounded-xl bg-clay-wash px-4 py-3 text-[14px] text-clay">
+          {error}
+        </p>
+      )}
 
       <div className="mt-6 divide-y divide-border rounded-xl glass px-4">
         <Counter
@@ -398,7 +501,7 @@ function DatesStep({
           hint={`${formatDate(draft.checkIn, { weekday: "short", day: "numeric", month: "short" })} to ${formatDate(draft.checkOut, { weekday: "short", day: "numeric", month: "short" })}`}
           value={nights}
           min={2}
-          max={14}
+          max={Math.max(nights, maxNights)}
           onChange={(n) => setDraft((d) => ({ ...d, checkOut: addDays(d.checkIn, n) }))}
         />
         <Counter
@@ -431,6 +534,10 @@ function Review({
   name,
   setName,
   remembered,
+  errors,
+  attempted,
+  onEdit,
+  canEdit,
 }: {
   draft: Booking
   prefs: Prefs
@@ -438,6 +545,11 @@ function Review({
   name: { first: string; last: string; email: string }
   setName: React.Dispatch<React.SetStateAction<{ first: string; last: string; email: string }>>
   remembered?: string[]
+  errors: { dates: string; first: string; email: string }
+  /** True once the guest has tried to confirm, so missing fields are pointed out. */
+  attempted: boolean
+  onEdit: (step: StepId) => void
+  canEdit: (step: StepId) => boolean
 }) {
   const s = suiteById(draft.suiteId)
   const t = bookingTotal(draft)
@@ -457,8 +569,18 @@ function Review({
             {draft.adults} {draft.adults === 1 ? "adult" : "adults"}
             {draft.children > 0 && `, ${draft.children} ${draft.children === 1 ? "child" : "children"}`}
           </div>
+          <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1">
+            <TextLink onClick={() => onEdit("suite")}>Change suite</TextLink>
+            <TextLink onClick={() => onEdit("dates")}>Change dates</TextLink>
+          </div>
         </div>
       </div>
+
+      {errors.dates && (
+        <p id="review-dates-error" tabIndex={-1} role="alert" className="rounded-xl bg-clay-wash px-4 py-3 text-[14px] text-clay">
+          {errors.dates}
+        </p>
+      )}
 
       <dl className="divide-y divide-border rounded-2xl glass px-4">
         <Row label={`${t.nights} nights at ${euro(s.nightly)}`} value={euro(t.room)} />
@@ -468,6 +590,9 @@ function Review({
         <Row label="Breakfast, yoga, local calls" value="Included" />
         <Row label="Total" value={euro(t.total)} strong />
       </dl>
+      <div className="-mt-3 px-1">
+        <TextLink onClick={() => onEdit("extras")}>{draft.extras.length ? "Change extras" : "Add a transfer or other extras"}</TextLink>
+      </div>
 
       {mode === "return" && remembered ? (
         <div className="rounded-2xl bg-sea-wash p-4">
@@ -486,6 +611,11 @@ function Review({
           <h2 className="mb-1 text-[16px] font-semibold">Your suite on arrival</h2>
           {pillowOptions.find((p) => p.id === prefs.pillow)?.label} pillows,{" "}
           {scentOptions.find((p) => p.id === prefs.scent)?.label.toLowerCase()}, set to {prefs.temperature}°C.
+          {canEdit("room") && (
+            <div className="mt-1.5">
+              <TextLink onClick={() => onEdit("room")}>Change suite setup</TextLink>
+            </div>
+          )}
         </div>
       )}
 
@@ -493,32 +623,58 @@ function Review({
         <fieldset className="space-y-3">
           <legend className="mb-3 text-[16px] font-semibold">Who is the booking for?</legend>
           <div className="grid grid-cols-2 gap-3">
-            <input
-              aria-label="First name"
-              autoComplete="given-name"
-              placeholder="First name"
-              value={name.first}
-              onChange={(e) => setName((n) => ({ ...n, first: e.target.value }))}
-              className={fieldClass}
-            />
-            <input
-              aria-label="Last name"
-              autoComplete="family-name"
-              placeholder="Last name"
-              value={name.last}
-              onChange={(e) => setName((n) => ({ ...n, last: e.target.value }))}
-              className={fieldClass}
-            />
+            <label className="block">
+              <span className="mb-1.5 block text-[14px] font-medium text-ink">First name</span>
+              <input
+                id="booking-first-name"
+                autoComplete="given-name"
+                value={name.first}
+                aria-invalid={attempted && !!errors.first}
+                aria-describedby={attempted && errors.first ? "booking-first-name-error" : undefined}
+                onChange={(e) => setName((n) => ({ ...n, first: e.target.value }))}
+                className={cn(fieldClass, attempted && errors.first && "border-clay")}
+              />
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-[14px] font-medium text-ink">
+                Last name <span className="font-normal text-ink-3">(optional)</span>
+              </span>
+              <input
+                autoComplete="family-name"
+                value={name.last}
+                onChange={(e) => setName((n) => ({ ...n, last: e.target.value }))}
+                className={fieldClass}
+              />
+            </label>
           </div>
-          <input
-            aria-label="Email"
-            type="email"
-            autoComplete="email"
-            placeholder="Email for your confirmation"
-            value={name.email}
-            onChange={(e) => setName((n) => ({ ...n, email: e.target.value }))}
-            className={fieldClass}
-          />
+          {attempted && errors.first && (
+            <p id="booking-first-name-error" role="alert" className="text-[13.5px] text-clay">
+              {errors.first}
+            </p>
+          )}
+          <label className="block">
+            <span className="mb-1.5 block text-[14px] font-medium text-ink">Email</span>
+            <input
+              id="booking-email"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              value={name.email}
+              aria-invalid={attempted && !!errors.email}
+              aria-describedby={attempted && errors.email ? "booking-email-error" : "booking-email-hint"}
+              onChange={(e) => setName((n) => ({ ...n, email: e.target.value }))}
+              className={cn(fieldClass, attempted && errors.email && "border-clay")}
+            />
+          </label>
+          {attempted && errors.email ? (
+            <p id="booking-email-error" role="alert" className="text-[13.5px] text-clay">
+              {errors.email}
+            </p>
+          ) : (
+            <p id="booking-email-hint" className="text-[13px] text-ink-3">
+              We send your confirmation here.
+            </p>
+          )}
           <p className="text-[13px] text-ink-3">Free cancellation until 30 days before arrival.</p>
         </fieldset>
       )}

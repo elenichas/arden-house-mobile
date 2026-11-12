@@ -90,7 +90,7 @@ export function Gate({ onChoose }: { onChoose: (k: GuestKind) => void }) {
           transition={{ duration: 0.9, delay: 0.15, ease: EASE }}
           className="max-w-[560px] px-2 font-display text-[40px] leading-[0.98] md:text-[56px] lg:text-[64px]"
         >
-          Twenty two suites in the white rock of Milos.
+          Seven suites in the white rock of Milos.
         </motion.h1>
         <p className="mt-3 max-w-[32ch] px-2 text-[15px] leading-relaxed text-white/90 md:max-w-[40ch] md:text-[17px]">
           This app looks after you from the day you book to long after you fly home.

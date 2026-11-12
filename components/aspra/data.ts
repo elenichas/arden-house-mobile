@@ -26,7 +26,7 @@ export const hotel = {
   name: "Aspra",
   place: "Milos, Greece",
   location: "Above Agia Kyriaki bay, south coast of Milos",
-  suites: 22,
+  suites: 7,
   checkIn: "15:00",
   checkOut: "12:00",
   airportMinutes: 20,
@@ -492,7 +492,7 @@ export const sampleProfiles: Record<GuestKind, Profile> = {
     plan: [],
     pastStay: {
       suiteId: "cave",
-      suiteNumber: "Cave 7",
+      suiteNumber: "Cave 3",
       checkIn: "2026-09-12",
       checkOut: "2026-09-18",
       moments: [
@@ -600,6 +600,41 @@ export function bookingTotal(b: Booking) {
   const nights = nightsBetween(b.checkIn, b.checkOut)
   const extrasCost = b.extras.reduce((sum, id) => sum + extraById(id).price, 0)
   return { nights, room: suite.nightly * nights, extras: extrasCost, total: suite.nightly * nights + extrasCost }
+}
+
+/** The demo's "today" while the guest is on Milos: the third day, or the last night of a short stay. */
+export function currentDay(nights: number) {
+  return Math.min(2, Math.max(0, nights - 1))
+}
+
+/** What one experience costs this booking: per person prices count every guest. */
+export function experienceCost(e: Experience, b: Booking) {
+  return e.per === "person" ? e.price * (b.adults + b.children) : e.price
+}
+
+export function planCost(plan: PlanItem[], b: Booking) {
+  return plan.reduce((sum, p) => sum + experienceCost(experienceById(p.experienceId), b), 0)
+}
+
+/* With seven suites, some nights are already taken. These are the demo's sold nights. */
+const soldNights: Record<SuiteId, Array<[string, string]>> = {
+  cave: [["2027-05-20", "2027-05-23"], ["2027-06-24", "2027-06-29"], ["2027-07-15", "2027-07-21"], ["2027-08-05", "2027-08-16"], ["2027-09-03", "2027-09-08"]],
+  pool: [["2027-05-06", "2027-05-10"], ["2027-06-18", "2027-06-23"], ["2027-07-02", "2027-07-12"], ["2027-08-01", "2027-08-20"], ["2027-09-24", "2027-09-28"]],
+  villa: [["2027-06-01", "2027-06-07"], ["2027-07-20", "2027-08-03"], ["2027-08-12", "2027-08-26"], ["2027-09-10", "2027-09-15"]],
+}
+
+export const SEASON = { first: "2027-04-24", last: "2027-10-26" }
+
+/** True when the suite type has no free suite on that night. */
+export function isSoldNight(iso: string, suiteId: SuiteId) {
+  return soldNights[suiteId].some(([from, to]) => iso >= from && iso <= to)
+}
+
+/** A stay is free when every night from arrival to the night before departure is free and in season. */
+export function stayIsFree(checkIn: string, checkOut: string, suiteId: SuiteId) {
+  if (checkIn < SEASON.first || checkOut > SEASON.last) return false
+  for (let d = checkIn; d < checkOut; d = addDays(d, 1)) if (isSoldNight(d, suiteId)) return false
+  return true
 }
 
 export function newRef() {

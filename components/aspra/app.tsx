@@ -4,7 +4,8 @@ import * as React from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import { BookOpen, CalendarRange, MessageCircle, Sun, type LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { AspraProvider, useAspra } from "./store"
+import { AspraProvider, readSaved, useAspra } from "./store"
+import { StaySheet } from "./stay-sheet"
 import type { GuestKind, TabId } from "./data"
 import { EASE, Sheet, Wordmark, Button, Segmented } from "./ui"
 import { Splash, Gate } from "./entry/gate"
@@ -33,11 +34,17 @@ function Shell({ initialKind }: { initialKind: GuestKind | null }) {
   )
 
   const afterSplash = React.useCallback(() => {
-    if (initialKind && !startedFromUrl.current) {
+    // A trip saved on this device opens where the guest left it.
+    const saved = readSaved()
+    if (saved?.booking && !startedFromUrl.current && (!initialKind || saved.kind === initialKind)) {
+      startedFromUrl.current = true
+      store.restore(saved)
+      setEntry("app")
+    } else if (initialKind && !startedFromUrl.current) {
       startedFromUrl.current = true
       choose(initialKind)
     } else setEntry("gate")
-  }, [initialKind, choose])
+  }, [initialKind, choose, store])
 
   const toStart = React.useCallback(() => {
     store.reset()
@@ -106,11 +113,11 @@ function MainApp({ onSwitchGuest, hidden }: { onSwitchGuest: () => void; hidden:
       aria-hidden={hidden}
       className={cn(
         "relative min-h-[100svh] w-full lg:pl-[272px]",
-        tab === "concierge" ? "ambient-dark" : "ambient",
+        "ambient",
         hidden && "invisible",
       )}
     >
-      <SideNav dark={tab === "concierge"} />
+      <SideNav dark={false} />
       {tab !== "concierge" && <TopBar />}
       <main className="mx-auto w-full max-w-[440px] md:max-w-[760px] lg:max-w-[1120px] lg:px-4 lg:pt-6">
         {/* All tabs stay mounted so chat history and scroll survive switches. */}
@@ -119,8 +126,9 @@ function MainApp({ onSwitchGuest, hidden }: { onSwitchGuest: () => void; hidden:
         <TabPanel active={tab === "concierge"}><ConciergeTab /></TabPanel>
         <TabPanel active={tab === "journal"}><JournalTab /></TabPanel>
       </main>
-      <TabBar dark={tab === "concierge"} />
+      <TabBar dark={false} />
       <ProfileSheet onSwitchGuest={onSwitchGuest} />
+      <StaySheet />
       <AnimatePresence>
         {store.tourOpen && !hidden && (
           <SuiteTour
@@ -312,6 +320,19 @@ function ProfileSheet({ onSwitchGuest }: { onSwitchGuest: () => void }) {
       <p className="mb-5 text-[14.5px] leading-relaxed text-ink-2">
         Your preferences travel with you to every stay. Nefeli uses them to plan your days, and housekeeping uses them to set up your suite.
       </p>
+      {store.booking && (
+        <Button
+          variant="outline"
+          block
+          className="mb-5"
+          onClick={() => {
+            store.setProfileOpen(false)
+            store.setStayOpen(true)
+          }}
+        >
+          Your stay: dates, cost and extras
+        </Button>
+      )}
       <div className="mb-6">
         <Segmented<"trip" | "suite">
           label="Preference section"
@@ -333,7 +354,7 @@ function ProfileSheet({ onSwitchGuest }: { onSwitchGuest: () => void }) {
 }
 
 function Toast() {
-  const { toast, tab } = useAspra()
+  const { toast, tab, dismissToast } = useAspra()
   return (
     <div
       aria-live="polite"
@@ -352,9 +373,20 @@ function Toast() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
             transition={{ duration: 0.35, ease: EASE }}
-            className="max-w-[400px] rounded-2xl border border-white/15 bg-obsidian/80 px-4 py-3 text-[14px] text-white backdrop-blur-xl"
+            className="pointer-events-auto flex max-w-[420px] items-center gap-2 rounded-2xl border border-white/15 bg-obsidian/85 py-1.5 pl-4 pr-1.5 text-[14px] text-white backdrop-blur-xl"
           >
-            {toast.text}
+            <span className="py-1.5 pr-2">{toast.text}</span>
+            {toast.action && (
+              <button
+                onClick={() => {
+                  toast.action?.run()
+                  dismissToast()
+                }}
+                className="h-11 shrink-0 rounded-xl px-3 text-[14px] font-semibold text-sulphur hover:bg-white/10"
+              >
+                {toast.action.label}
+              </button>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

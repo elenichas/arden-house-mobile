@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { ArrowUp, CalendarPlus, Check, ChevronRight, Phone, Send } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useAspra } from "../store"
-import { experienceById, hotel } from "../data"
+import { euro, experienceById, experienceCost, hotel } from "../data"
 import { ArchMark, EASE } from "../ui"
 import {
   contextSummary,
@@ -137,8 +137,18 @@ export function ConciergeTab() {
         store.notify("Book a stay first, then I can add this to your plan.")
         return
       }
-      store.addToPlan(a.experienceId, a.day, a.time)
-      store.notify(`${experienceById(a.experienceId).name} added to your plan.`)
+      const e = experienceById(a.experienceId)
+      const planId = store.addToPlan(a.experienceId, a.day, a.time)
+      const cost = experienceCost(e, store.booking)
+      store.notify(`${e.name} added to your plan${cost > 0 ? `, ${euro(cost)}` : ""}.`, {
+        label: "Undo",
+        run: () => {
+          store.removeFromPlan(planId)
+          setMessages((m) =>
+            m.map((x) => (x.id === msg.id ? { ...x, done: new Set([...(x.done ?? [])].filter((n) => n !== index)) } : x)),
+          )
+        },
+      })
     } else if (a.kind === "request") {
       store.addRequest(a.request)
     } else if (a.kind === "tab") {
@@ -157,22 +167,22 @@ export function ConciergeTab() {
   const empty = messages.length === 0
 
   return (
-    <div className="on-dark mx-auto flex min-h-[100svh] w-full max-w-[760px] flex-col text-white lg:min-h-[calc(100svh-24px)]">
-      <header className="sticky top-0 z-[var(--z-nav)] flex items-center gap-3 border-b border-white/10 bg-obsidian/30 px-5 pb-3 pt-[max(env(safe-area-inset-top),12px)] backdrop-blur-xl lg:rounded-[28px] lg:border lg:border-white/10">
-        <span className="grid size-11 place-items-center rounded-full bg-white text-obsidian">
+    <div className="mx-auto flex min-h-[100svh] w-full max-w-[760px] flex-col text-ink lg:min-h-[calc(100svh-24px)]">
+      <header className="sticky top-0 z-[var(--z-nav)] flex items-center gap-3 border-b border-white/70 bg-white/45 px-5 pb-3 pt-[max(env(safe-area-inset-top),12px)] backdrop-blur-xl lg:rounded-[28px] lg:border lg:border-white/80 lg:py-3">
+        <span className="grid size-11 place-items-center rounded-full bg-ink text-white">
           <ArchMark className="size-6" />
         </span>
         <div className="min-w-0 flex-1">
           <h1 className="text-[17px] font-semibold">Nefeli</h1>
-          <p className="flex items-center gap-1.5 text-[13px] text-white/70">
-            <span className="size-2 rounded-full bg-[oklch(0.75_0.15_150)]" aria-hidden />
-            Concierge, any hour
+          <p className="flex items-center gap-1.5 text-[13px] text-ink-3">
+            <span className="size-2 rounded-full bg-olive" aria-hidden />
+            AI concierge, any hour
           </p>
         </div>
         <a
           href={`tel:${hotel.receptionPhone.replace(/\s/g, "")}`}
           aria-label={`Call reception, ${hotel.receptionPhone}`}
-          className="grid size-11 place-items-center rounded-full border border-white/20 text-white hover:bg-white/10"
+          className="glass grid size-11 place-items-center rounded-full text-ink hover:bg-white/80"
         >
           <Phone className="size-[18px]" />
         </a>
@@ -184,18 +194,18 @@ export function ConciergeTab() {
             <h2 className="font-display text-[34px] leading-[1.02]">
               {greeting(ctx)}
             </h2>
-            <p className="mt-3 max-w-[34ch] text-[15px] leading-relaxed text-white/80">
-              I know your booking and what you like. Ask me to plan a day, book a table or the boat, or send something to your suite. {hotel.humanConcierge} and the reception team are here all night if you would rather talk to a person.
+            <p className="mt-3 max-w-[38ch] text-[15px] leading-relaxed text-ink-2">
+              I am Aspra's AI concierge. I know your booking and what you like. Ask me to plan a day, book a table or the boat, or send something to your suite. {hotel.humanConcierge} and the reception team are here all night if you would rather talk to a person.
             </p>
             <ul className="mt-7 space-y-2">
               {prompts.map((p) => (
                 <li key={p}>
                   <button
                     onClick={() => send(p)}
-                    className="glass-dark flex min-h-12 w-full items-center justify-between gap-3 rounded-2xl px-4 py-3 text-left text-[15px] transition-colors hover:bg-white/15"
+                    className="glass flex min-h-12 w-full items-center justify-between gap-3 rounded-2xl px-4 py-3 text-left text-[15px] transition-colors hover:bg-white/85"
                   >
                     {p}
-                    <ChevronRight className="size-4 shrink-0 text-sulphur" aria-hidden />
+                    <ChevronRight className="size-4 shrink-0 text-sea" aria-hidden />
                   </button>
                 </li>
               ))}
@@ -219,11 +229,11 @@ export function ConciergeTab() {
               ) : (
                 <div className="w-full max-w-[94%] md:max-w-[80%]">
                   {m.text ? (
-                    <div className="glass-dark whitespace-pre-line rounded-3xl rounded-bl-lg px-4 py-3 text-[15.5px] leading-relaxed text-white">{m.text}</div>
+                    <div className="glass whitespace-pre-line rounded-3xl rounded-bl-lg px-4 py-3 text-[15.5px] leading-relaxed text-ink">{m.text}</div>
                   ) : (
                     <div className="flex h-6 items-center gap-1.5" aria-label="Nefeli is writing">
                       {[0, 1, 2].map((i) => (
-                        <span key={i} className="animate-typing size-1.5 rounded-full bg-white/70" style={{ animationDelay: `${i * 0.15}s` }} />
+                        <span key={i} className="animate-typing size-1.5 rounded-full bg-ink-3" style={{ animationDelay: `${i * 0.15}s` }} />
                       ))}
                     </div>
                   )}
@@ -244,17 +254,17 @@ export function ConciergeTab() {
                               onClick={() => runAction(m, i, a)}
                               className={cn(
                                 "inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-[14px] font-medium transition-colors",
-                                done ? "bg-white/10 text-white/80" : "bg-white text-obsidian hover:bg-chalk-2",
+                                done ? "bg-ink/5 text-ink-2" : "bg-ink text-white hover:bg-ink-2",
                               )}
                             >
                               {done ? (
-                                <Check className="size-4 text-sulphur" aria-hidden />
+                                <Check className="size-4 text-olive" aria-hidden />
                               ) : a.kind === "add" ? (
-                                <CalendarPlus className="size-4 text-sea" aria-hidden />
+                                <CalendarPlus className="size-4 text-sulphur" aria-hidden />
                               ) : a.kind === "request" ? (
-                                <Send className="size-4 text-sea" aria-hidden />
+                                <Send className="size-4 text-sulphur" aria-hidden />
                               ) : (
-                                <ChevronRight className="size-4 text-sea" aria-hidden />
+                                <ChevronRight className="size-4 text-sulphur" aria-hidden />
                               )}
                               {done ? (a.kind === "add" ? "Added to your plan" : "Sent") : a.label}
                             </button>
@@ -286,14 +296,14 @@ export function ConciergeTab() {
                 key={p}
                 onClick={() => send(p)}
                 disabled={busy}
-                className="glass-smoke h-9 shrink-0 rounded-full px-3.5 text-[13px] text-white/90 disabled:opacity-40"
+                className="glass-strong h-10 shrink-0 rounded-full px-3.5 text-[13.5px] text-ink-2 disabled:opacity-40"
               >
                 {p}
               </button>
             ))}
           </div>
         )}
-        <div className="glass-smoke flex items-end gap-2 rounded-[26px] p-1.5 pl-4 focus-within:border-white/50">
+        <div className="glass-strong flex items-end gap-2 rounded-[26px] p-1.5 pl-4 shadow-[0_6px_8px_-4px_rgb(10_12_17/0.14)] focus-within:border-sea">
           <label htmlFor="concierge-input" className="sr-only">
             Message Nefeli
           </label>
@@ -309,13 +319,13 @@ export function ConciergeTab() {
               }
             }}
             placeholder="Message Nefeli"
-            className="max-h-28 min-h-[40px] flex-1 resize-none bg-transparent py-2.5 text-[16px] text-white placeholder:text-white/55 focus:outline-none"
+            className="max-h-28 min-h-[40px] flex-1 resize-none bg-transparent py-2.5 text-[16px] text-ink placeholder:text-ink-3 focus:outline-none"
           />
           <button
             type="submit"
             aria-label="Send"
             disabled={!input.trim() || busy}
-            className="grid size-10 shrink-0 place-items-center rounded-full bg-white text-obsidian transition-opacity disabled:opacity-35"
+            className="grid size-10 shrink-0 place-items-center rounded-full bg-ink text-white transition-opacity disabled:opacity-35"
           >
             <ArrowUp className="size-5" strokeWidth={2.4} />
           </button>

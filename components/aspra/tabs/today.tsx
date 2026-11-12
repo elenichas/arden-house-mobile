@@ -24,7 +24,10 @@ import {
   IMG,
   bookingTotal,
   conditions,
+  currentDay,
   dayLabel,
+  euro,
+  experienceCost,
   daysUntil,
   experienceById,
   flowerOptions,
@@ -75,7 +78,7 @@ export function TodayTab() {
 /* ─── Before ────────────────────────────────────────────────── */
 
 function BeforeStay() {
-  const { booking, guest, prefs, plan, setProfileOpen, setTourOpen, setTab, addRequest, askConcierge } = useAspra()
+  const { booking, guest, prefs, plan, setStayOpen, setTourOpen, setTab, addRequest, askConcierge } = useAspra()
   const [packOpen, setPackOpen] = React.useState(false)
   if (!booking) return null
   const s = suiteById(booking.suiteId)
@@ -144,7 +147,7 @@ function BeforeStay() {
       </section>
 
       <section className="px-5">
-        <SectionTitle action={<TextLink onClick={() => setProfileOpen(true)}>Change</TextLink>}>Your suite on arrival</SectionTitle>
+        <SectionTitle action={<TextLink onClick={() => setStayOpen(true)}>Manage stay</TextLink>}>Your suite on arrival</SectionTitle>
         <div className="overflow-hidden rounded-2xl bg-sea-wash">
           <div className="flex gap-4 p-4">
             <BedDouble className="mt-0.5 size-5 shrink-0 text-sea" aria-hidden />
@@ -254,10 +257,10 @@ const quickServices = [
 ]
 
 function DuringStay() {
-  const { booking, guest, prefs, plan, requests, addRequest, addToPlan, askConcierge, setTab, notify } = useAspra()
+  const { booking, guest, prefs, plan, requests, addRequest, cancelRequest, addToPlan, removeFromPlan, askConcierge, setTab, notify } = useAspra()
   if (!booking) return null
   const nights = bookingTotal(booking).nights
-  const today = Math.min(2, nights - 1)
+  const today = currentDay(nights)
   const todays = plan.filter((p) => p.day === today).sort((a, b) => a.time.localeCompare(b.time))
   const picks = suggestFor(prefs, plan).slice(0, 4)
   const greeting = prefs.rhythm === "early" ? "Kalimera" : "Kalimera, no rush"
@@ -326,7 +329,16 @@ function DuringStay() {
           <ul className="mt-4 divide-y divide-border rounded-2xl glass" aria-live="polite">
             {requests.slice(0, 4).map((r) => (
               <li key={r.id} className="flex items-center justify-between gap-3 px-4 py-3 text-[14.5px]">
-                <span className="min-w-0 truncate">{r.label}</span>
+                <span className="min-w-0 flex-1 truncate">{r.label}</span>
+                {r.status === "sent" && (
+                  <button
+                    onClick={() => cancelRequest(r.id)}
+                    aria-label={`Cancel request: ${r.label}`}
+                    className="-my-2 h-11 shrink-0 px-2 text-[13.5px] font-medium text-sea-deep underline-offset-4 hover:underline"
+                  >
+                    Cancel
+                  </button>
+                )}
                 <span className={cn("shrink-0 rounded-full px-2.5 py-1 text-[12.5px] font-medium", r.status === "sent" ? "bg-chalk-2 text-ink-2" : "bg-sea-wash text-sea-deep")}>
                   {r.status === "sent" ? "Sent" : "On its way"}
                 </span>
@@ -356,8 +368,13 @@ function DuringStay() {
                 variant="outline"
                 className="mt-3"
                 onClick={() => {
-                  addToPlan(e.id, Math.min(today + 1, nights - 1))
-                  notify(`${e.name} added for ${dayLabel(booking.checkIn, Math.min(today + 1, nights - 1))}.`)
+                  const day = today + 1
+                  const planId = addToPlan(e.id, day)
+                  const cost = experienceCost(e, booking)
+                  notify(`${e.name} added for ${dayLabel(booking.checkIn, day)}${cost > 0 ? `, ${euro(cost)}` : ""}.`, {
+                    label: "Undo",
+                    run: () => removeFromPlan(planId),
+                  })
                 }}
               >
                 <Plus className="size-4" aria-hidden /> Add to tomorrow
@@ -483,7 +500,7 @@ function AskNefeli({ title, prompts, onAsk, className }: { title: string; prompt
     <section className={cn("px-5", className)}>
       <div className="on-dark rounded-3xl bg-sea p-5 text-white">
         <div className="flex items-center gap-2 text-[13.5px] text-white/70">
-          <Sparkles className="size-4" aria-hidden /> Nefeli, concierge, 24 hours
+          <Sparkles className="size-4" aria-hidden /> Nefeli, AI concierge, 24 hours
         </div>
         <h2 className="mt-2 font-display text-[28px] leading-tight">{title}</h2>
         <div className="mt-4 flex flex-wrap gap-2">

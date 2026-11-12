@@ -83,7 +83,32 @@ function targetDay(c: ConciergeContext, text: string) {
   return 1
 }
 
+/** Replies check the plan first, so Nefeli never offers to book what is already booked. */
 export function localReply(input: string, c: ConciergeContext): ConciergeReply {
+  const reply = baseReply(input, c)
+  const b = c.booking
+  if (!b) return reply
+  const notes: string[] = []
+  let linked = false
+  const actions: ConciergeAction[] = []
+  for (const a of reply.actions) {
+    const planned = a.kind === "add" ? c.plan.find((p) => p.experienceId === a.experienceId) : undefined
+    if (!planned) {
+      actions.push(a)
+      continue
+    }
+    const when = new Date(addDays(b.checkIn, planned.day) + "T12:00:00").toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })
+    const name = experienceById(planned.experienceId).name
+    notes.push(`${name} is already in your plan for ${when} at ${planned.time}${planned.status === "requested" ? ", waiting for us to confirm" : ""}.`)
+    if (!linked) {
+      actions.push({ kind: "tab", label: "See it in your plan", tab: "plan" })
+      linked = true
+    }
+  }
+  return notes.length ? { text: `${notes.join(" ")}\n\n${reply.text}`, actions } : reply
+}
+
+function baseReply(input: string, c: ConciergeContext): ConciergeReply {
   const t = input.toLowerCase()
   const name = c.guest.firstName
   const b = c.booking

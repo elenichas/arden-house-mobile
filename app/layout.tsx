@@ -18,7 +18,7 @@ const instrument = Instrument_Sans({
 export const metadata: Metadata = {
   title: "Aspra Milos",
   description:
-    "The guest app for Aspra, a 22-suite sea hotel cut into the white rock of Milos, Greece. Book a suite, plan your days, and message Nefeli, the concierge, at any hour.",
+    "The guest app for Aspra, a seven-suite sea hotel cut into the white rock of Milos, Greece. Book a suite, plan your days, and message Nefeli, the concierge, at any hour.",
   icons: { icon: "/icon.svg" },
 }
 
