@@ -77,7 +77,6 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000). The quickest way to see the full app is `?guest=booked`, which opens Clara's sample booking.
 
-The concierge works without any setup. To get replies from Claude, put `AI_GATEWAY_API_KEY` in `.env.local`.
 
 ## Quality checks
 
@@ -103,4 +102,3 @@ The theme is Meltemi: black on a cool white with one electric sea blue, large ro
 
 Glass comes in four strengths, defined in `app/globals.css`: `glass` for cards, `glass-strong` for sheets and the tab bar, `glass-dark` for dark screens, and `glass-smoke` for text and controls that sit on photos or the 3D view. People who ask their device to reduce transparency get solid surfaces instead.
 
-The five directions that were considered are still at `/themes`.
