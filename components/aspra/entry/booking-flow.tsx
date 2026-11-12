@@ -621,7 +621,8 @@ function Review({
 
       {mode === "new" && (
         <fieldset className="space-y-3">
-          <legend className="mb-3 text-[16px] font-semibold">Who is the booking for?</legend>
+          <legend className="mb-1 text-[16px] font-semibold">Who is the booking for?</legend>
+          <p className="text-[13.5px] text-ink-3">A sample guest is filled in for you. Change it if you like.</p>
           <div className="grid grid-cols-2 gap-3">
             <label className="block">
               <span className="mb-1.5 block text-[14px] font-medium text-ink">First name</span>

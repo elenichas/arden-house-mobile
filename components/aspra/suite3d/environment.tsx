@@ -10,7 +10,7 @@ import * as React from "react"
 import * as THREE from "three"
 import { useFrame, useThree } from "@react-three/fiber"
 import { Environment, Lightformer, RoundedBox } from "@react-three/drei"
-import type { Light, SuiteId } from "../data"
+import type { Light, SuiteId, TerraceSetup } from "../data"
 import { useSuite } from "./context"
 import { HALF_D, W, WALL_H, WALL_T, archPath, rng, rockGeometry, roomSection, shellGeometry, type Vec3 } from "./geometry"
 import { Lantern } from "./furniture"
@@ -510,6 +510,185 @@ function Lounger({ position, rotation = 0 }: { position: Vec3; rotation?: number
   )
 }
 
+/**
+ * Plays a short settle when `k` changes, so a new choice visibly lands in the room.
+ * `origin` is the point the content grows from.
+ */
+export function Pop({ k, origin = [0, 0, 0], children }: { k: string | number; origin?: Vec3; children: React.ReactNode }) {
+  const { reduced } = useSuite()
+  const ref = React.useRef<THREE.Group>(null)
+  const t = React.useRef(1)
+  const first = React.useRef(true)
+  React.useEffect(() => {
+    if (first.current) {
+      first.current = false
+      return
+    }
+    if (!reduced) t.current = 0
+  }, [k, reduced])
+  useFrame((_, dt) => {
+    const g = ref.current
+    if (!g || t.current >= 1) return
+    t.current = Math.min(1, t.current + dt * 2.6)
+    const e = 1 - Math.pow(1 - t.current, 3)
+    // rises from slightly small, overshoots a touch, then settles
+    g.scale.setScalar(0.86 + 0.14 * e + Math.sin(e * Math.PI) * 0.035)
+  })
+  return (
+    <group position={origin}>
+      <group ref={ref}>
+        <group position={[-origin[0], -origin[1], -origin[2]]}>{children}</group>
+      </group>
+    </group>
+  )
+}
+
+/** A table for two under the pergola, laid for breakfast. */
+function TerraceTable({ position, wood, white }: { position: Vec3; wood: THREE.Material; white: THREE.Material }) {
+  const { tex } = useSuite()
+  return (
+    <group position={position}>
+      <mesh position={[0, 0.36, 0]} material={white} castShadow receiveShadow>
+        <cylinderGeometry args={[0.13, 0.26, 0.72, 20]} />
+      </mesh>
+      <mesh position={[0, 0.745, 0]} material={wood} castShadow receiveShadow>
+        <cylinderGeometry args={[0.52, 0.52, 0.05, 40]} />
+      </mesh>
+      {[-1, 1].map((side) => (
+        <group key={side} position={[side * 0.86, 0, 0]} rotation-y={side * -Math.PI / 2}>
+          {/* chair faces the table: plaster block seat, linen cushion, low back */}
+          <RoundedBox args={[0.5, 0.4, 0.5]} radius={0.07} position={[0, 0.2, 0]} material={white} castShadow receiveShadow />
+          <RoundedBox args={[0.44, 0.07, 0.44]} radius={0.03} position={[0, 0.435, 0]} castShadow>
+            <meshStandardMaterial color="#e6dac4" roughness={1} bumpMap={tex.linen} bumpScale={0.3} />
+          </RoundedBox>
+          <RoundedBox args={[0.5, 0.42, 0.1]} radius={0.045} position={[0, 0.6, -0.22]} material={white} castShadow />
+        </group>
+      ))}
+      {/* carafe, two cups, a bowl of fruit */}
+      <mesh position={[0.04, 0.88, -0.2]}>
+        <cylinderGeometry args={[0.04, 0.065, 0.22, 16]} />
+        <meshPhysicalMaterial color="#dff1f5" roughness={0.08} transmission={0.85} thickness={0.2} transparent opacity={0.75} />
+      </mesh>
+      {[-1, 1].map((side) => (
+        <group key={side} position={[side * 0.27, 0.77, 0.05]}>
+          <mesh position={[0, 0.005, 0]}>
+            <cylinderGeometry args={[0.11, 0.11, 0.012, 24]} />
+            <meshStandardMaterial color="#f7f4ee" roughness={0.5} />
+          </mesh>
+          <mesh position={[0, 0.045, 0.12 * -side * 0]}>
+            <cylinderGeometry args={[0.04, 0.032, 0.07, 16]} />
+            <meshStandardMaterial color="#c9744a" roughness={0.7} />
+          </mesh>
+        </group>
+      ))}
+      <mesh position={[-0.05, 0.8, 0.24]}>
+        <cylinderGeometry args={[0.12, 0.07, 0.07, 20]} />
+        <meshStandardMaterial color="#b0653f" roughness={0.85} />
+      </mesh>
+      {[[-0.09, 0.855, 0.24, "#7a3f6a"], [-0.02, 0.86, 0.21, "#d9a441"], [-0.03, 0.855, 0.28, "#8fa05a"]].map(([x, y, z, c], i) => (
+        <mesh key={i} position={[x as number, y as number, z as number]}>
+          <sphereGeometry args={[0.04, 12, 10]} />
+          <meshStandardMaterial color={c as string} roughness={0.6} />
+        </mesh>
+      ))}
+    </group>
+  )
+}
+
+const DROPS = 54
+
+/** The outdoor rain shower against the cliff. Water runs while you stand near it. */
+function RainShower({ position, white, wood }: { position: Vec3; white: THREE.Material; wood: THREE.Material }) {
+  const { atmos, reduced } = useSuite()
+  const camera = useThree((s) => s.camera)
+  const drops = React.useRef<THREE.InstancedMesh>(null)
+  const seeds = React.useMemo(() => {
+    const r = rng(77)
+    return Array.from({ length: DROPS }, () => ({ a: r() * Math.PI * 2, d: Math.sqrt(r()) * 0.13, o: r(), v: 0.85 + r() * 0.3 }))
+  }, [])
+  const dummy = React.useMemo(() => new THREE.Object3D(), [])
+  const brass = React.useMemo(() => new THREE.MeshStandardMaterial({ color: "#b98f4e", roughness: 0.32, metalness: 0.85 }), [])
+  // the inside face of the screen: the same plaster, seen from within the curve
+  const inner = React.useMemo(() => {
+    const m = (white as THREE.MeshStandardMaterial).clone()
+    m.side = THREE.BackSide
+    return m
+  }, [white])
+  const headY = 2.12
+
+  useFrame(() => {
+    const m = drops.current
+    if (!m) return
+    const dx = camera.position.x - position[0]
+    const dz = camera.position.z - (position[2] - 0.05)
+    const near = dx * dx + dz * dz < 3.2 * 3.2 && camera.position.z < Z_FACE
+    m.visible = near
+    if (!near) return
+    const time = reduced ? 0.4 : atmos.current.time
+    for (let i = 0; i < DROPS; i++) {
+      const s = seeds[i]
+      const f = (time * s.v * 1.5 + s.o) % 1
+      dummy.position.set(Math.sin(s.a) * s.d, headY - 0.04 - f * f * (headY - 0.1), -0.05 + Math.cos(s.a) * s.d)
+      dummy.scale.set(1, 0.6 + f * 1.6, 1)
+      dummy.updateMatrix()
+      m.setMatrixAt(i, dummy.matrix)
+    }
+    m.instanceMatrix.needsUpdate = true
+  })
+
+  return (
+    <group position={position}>
+      {/* stone tray and teak duckboard */}
+      <RoundedBox args={[1.5, 0.07, 1.25]} radius={0.03} position={[0, 0.035, -0.1]} receiveShadow castShadow>
+        <meshStandardMaterial color="#cfc8ba" roughness={0.9} />
+      </RoundedBox>
+      {[-0.4, -0.24, -0.08, 0.08, 0.24, 0.4].map((x) => (
+        <mesh key={x} position={[x, 0.09, -0.08]} material={wood} castShadow receiveShadow>
+          <boxGeometry args={[0.13, 0.035, 0.9]} />
+        </mesh>
+      ))}
+      {/* curved plaster screen, open towards the arch */}
+      <mesh position={[0, 0.95, -0.1]} material={white} castShadow receiveShadow>
+        <cylinderGeometry args={[0.92, 0.92, 1.9, 28, 1, true, Math.PI / 2 - 0.35, Math.PI / 2 + 0.75]} />
+      </mesh>
+      <mesh position={[0, 0.95, -0.1]} material={inner} receiveShadow>
+        <cylinderGeometry args={[0.8, 0.8, 1.9, 28, 1, true, Math.PI / 2 - 0.35, Math.PI / 2 + 0.75]} />
+      </mesh>
+      <mesh position={[0, 1.905, -0.1]} rotation-x={-Math.PI / 2} material={white}>
+        <ringGeometry args={[0.8, 0.92, 28, 1, -Math.PI / 2 - 0.4, Math.PI / 2 + 0.75]} />
+      </mesh>
+      {/* brass riser on the cliff wall, arm and rain head */}
+      <mesh position={[0, 1.2, 0.44]} material={brass} castShadow>
+        <cylinderGeometry args={[0.018, 0.018, 2.0, 10]} />
+      </mesh>
+      <mesh position={[0, 2.2, 0.2]} rotation-x={Math.PI / 2} material={brass}>
+        <cylinderGeometry args={[0.018, 0.018, 0.5, 10]} />
+      </mesh>
+      <mesh position={[0, headY + 0.03, -0.05]} material={brass} castShadow>
+        <cylinderGeometry args={[0.15, 0.13, 0.03, 28]} />
+      </mesh>
+      <mesh position={[0, 1.1, 0.42]} rotation-x={Math.PI / 2} material={brass}>
+        <cylinderGeometry args={[0.045, 0.045, 0.05, 16]} />
+      </mesh>
+      {/* a plaster stool with a folded towel and a bottle of soap */}
+      <mesh position={[-0.78, 0.22, 0.2]} material={white} castShadow receiveShadow>
+        <cylinderGeometry args={[0.19, 0.22, 0.44, 20]} />
+      </mesh>
+      <RoundedBox args={[0.3, 0.09, 0.22]} radius={0.035} position={[-0.78, 0.49, 0.2]} castShadow>
+        <meshStandardMaterial color="#e9dcc4" roughness={1} />
+      </RoundedBox>
+      <mesh position={[-0.6, 0.53, 0.33]}>
+        <cylinderGeometry args={[0.028, 0.032, 0.14, 12]} />
+        <meshStandardMaterial color="#6b5a45" roughness={0.4} />
+      </mesh>
+      <instancedMesh ref={drops} args={[undefined, undefined, DROPS]} frustumCulled={false} visible={false}>
+        <boxGeometry args={[0.006, 0.09, 0.006]} />
+        <meshBasicMaterial color="#eaf6fb" transparent opacity={0.55} depthWrite={false} />
+      </instancedMesh>
+    </group>
+  )
+}
+
 function Boat() {
   const { atmos, reduced } = useSuite()
   const ref = React.useRef<THREE.Group>(null)
@@ -549,7 +728,7 @@ function Boat() {
   )
 }
 
-export function Outside({ suiteId }: { suiteId: SuiteId }) {
+export function Outside({ suiteId, terrace }: { suiteId: SuiteId; terrace: TerraceSetup }) {
   const { tex, atmos } = useSuite()
   const pool = React.useMemo(
     () =>
@@ -626,8 +805,17 @@ export function Outside({ suiteId }: { suiteId: SuiteId }) {
           </mesh>
         ))}
       </group>
-      <Lounger position={[-3.75, 0, Z_FACE - 2.8]} rotation={Math.PI} />
-      <Lounger position={[-2.6, 0, Z_FACE - 2.8]} rotation={Math.PI} />
+      <Pop k={terrace} origin={[-3.15, 0, Z_FACE - 2.8]}>
+        {terrace === "dining" ? (
+          <TerraceTable position={[-3.15, 0, Z_FACE - 2.8]} wood={wood} white={white} />
+        ) : (
+          <>
+            <Lounger position={[-3.75, 0, Z_FACE - 2.8]} rotation={Math.PI} />
+            <Lounger position={[-2.6, 0, Z_FACE - 2.8]} rotation={Math.PI} />
+          </>
+        )}
+      </Pop>
+      <RainShower position={[3.95, 0, Z_FACE - 0.5]} white={white} wood={wood} />
 
       {hasPool && (
         <group position={[2.3, 0, Z_FACE - 3.1]}>

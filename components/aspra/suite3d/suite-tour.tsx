@@ -50,13 +50,16 @@ import {
   pillowOptions,
   scentOptions,
   suiteById,
+  terraceOptions,
   welcomeOptions,
   type Light,
   type Prefs,
   type SuiteId,
 } from "../data"
 import { Button, EASE, IconButton } from "../ui"
-import type { HotspotId, ViewpointId } from "./scene"
+import type { HotspotId } from "./scene"
+import { VIEWPOINTS, type Pose, type ViewpointId } from "./spots"
+import { FloorPlan } from "./floor-plan"
 
 const SuiteScene = dynamic(() => import("./scene"), { ssr: false, loading: () => null })
 
@@ -126,11 +129,29 @@ const SETTINGS: Array<{ id: SettingId; label: string; icon: LucideIcon; intro: s
     intro: "Filled before you arrive. What stands on top is what is inside.",
     value: (p) => (p.fridge === "local-wine" ? "Island wine" : p.fridge === "no-alcohol" ? "No alcohol" : p.fridge === "kids" ? "For children" : "Empty"),
   },
+  {
+    id: "terrace",
+    label: "Terrace",
+    icon: Sunset,
+    intro: "What stands under the reed pergola when you arrive. We can swap it any day.",
+    value: (p) => ((p.terrace ?? "loungers") === "dining" ? "Table for two" : "Loungers"),
+  },
 ]
 
-const LABELS = Object.fromEntries([...SETTINGS.map((s) => [s.id, s.label]), ["view", "Terrace"]]) as Record<HotspotId, string>
+const LABELS = Object.fromEntries([...SETTINGS.map((s) => [s.id, s.label]), ["view", "Step outside"]]) as Record<HotspotId, string>
 
-const SUITE_KEYS = ["bed", "pillow", "linen", "temperature", "curtains", "flowers", "scent", "welcome", "fridge"] as const
+const SUITE_KEYS = ["bed", "pillow", "linen", "temperature", "curtains", "flowers", "scent", "welcome", "fridge", "terrace"] as const
+
+const SPOT_ICONS: Record<ViewpointId, LucideIcon> = {
+  door: DoorOpen,
+  room: Shirt,
+  bed: Armchair,
+  window: Sun,
+  terrace: Waves,
+  pergola: Sunset,
+  rail: Waves,
+  shower: Droplets,
+}
 
 type QualityMode = "auto" | "high" | "light"
 
@@ -157,6 +178,7 @@ export function SuiteTour({
   const [settingsOpen, setSettingsOpen] = React.useState(false)
   const [mode, setMode] = React.useState<QualityMode>("auto")
   const [autoQuality, setAutoQuality] = React.useState<"high" | "light">("high")
+  const pose = React.useRef<Pose>({ x: VIEWPOINTS.door.camera[0], z: VIEWPOINTS.door.camera[2], heading: 0 })
   const quality = mode === "auto" ? autoQuality : mode
 
   React.useEffect(() => {
@@ -240,6 +262,8 @@ export function SuiteTour({
             quality={quality}
             labels={LABELS}
             onSelect={select}
+            onWalk={go}
+            pose={pose}
             onReady={() => setTimeout(() => setReady(true), 350)}
             onSlow={() => setAutoQuality("light")}
           />
@@ -332,6 +356,16 @@ export function SuiteTour({
         </div>
       </div>
 
+      {/* floor plan: where you are and which way you face */}
+      {webgl && ready && !settingsOpen && (
+        <FloorPlan
+          pose={pose}
+          current={focus ? null : viewpoint.id}
+          hasPool={suiteId !== "cave"}
+          className="absolute right-4 top-[calc(max(env(safe-area-inset-top),12px)+108px)] z-30 md:top-[calc(max(env(safe-area-inset-top),12px)+56px)]"
+        />
+      )}
+
       {/* view settings popover */}
       <AnimatePresence>
         {settingsOpen && (
@@ -390,7 +424,7 @@ export function SuiteTour({
             className="pointer-events-none absolute inset-x-0 top-[52%] z-30 flex justify-center px-6"
           >
             <p className="glass-smoke flex items-center gap-2 rounded-full px-4 py-2.5 text-[13.5px]">
-              <Hand className="size-4 shrink-0 text-sulphur" aria-hidden /> Drag to look around. Tap a dot to change it.
+              <Hand className="size-4 shrink-0 text-sulphur" aria-hidden /> Drag to look. Tap a dot to change it, a ring to walk.
             </p>
           </motion.div>
         )}
@@ -473,12 +507,7 @@ export function SuiteTour({
               <div className="mx-auto w-full max-w-[760px]">
               <div role="group" aria-label="Stand somewhere else" className="no-scrollbar -mx-4 mb-4 flex items-center gap-1.5 overflow-x-auto px-4">
                 <span className="mr-1 shrink-0 text-[12.5px] text-white/75">Stand at</span>
-                {([
-                  { id: "door", label: "Door", icon: DoorOpen },
-                  { id: "bed", label: "Bed", icon: Armchair },
-                  { id: "wardrobe", label: "Wardrobe", icon: Shirt },
-                  { id: "terrace", label: "Terrace", icon: Waves },
-                ] as Array<{ id: ViewpointId; label: string; icon: LucideIcon }>).map((v) => {
+                {(Object.keys(VIEWPOINTS) as ViewpointId[]).map((id) => ({ id, label: VIEWPOINTS[id].label, icon: SPOT_ICONS[id] })).map((v) => {
                   const on = viewpoint.id === v.id
                   const Icon = v.icon
                   return (
@@ -722,6 +751,31 @@ function Options({ id, prefs, onChange }: { id: SettingId; prefs: Prefs; onChang
       </div>
     )
   }
+
+  if (id === "terrace")
+    return (
+      <div className={list} role="radiogroup" aria-label="Terrace">
+        {terraceOptions.map((o) => (
+          <Choice
+            key={o.id}
+            selected={(prefs.terrace ?? "loungers") === o.id}
+            onClick={() => onChange({ terrace: o.id })}
+            title={o.label}
+            detail={o.detail}
+            visual={
+              <svg viewBox="0 0 40 40" className="w-9" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden>
+                <path d="M5 9h30M8 9v6M32 9v6" />
+                {o.id === "dining" ? (
+                  <path d="M12 24h16M20 24v9M9 33v-6h4M31 33v-6h-4" />
+                ) : (
+                  <path d="M7 31l6-7h9M7 33h12M21 31l6-7h7M21 33h12" />
+                )}
+              </svg>
+            }
+          />
+        ))}
+      </div>
+    )
 
   if (id === "curtains")
     return (

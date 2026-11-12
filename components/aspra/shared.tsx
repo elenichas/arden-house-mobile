@@ -11,6 +11,7 @@ import {
   linenOptions,
   curtainOptions,
   welcomeOptions,
+  terraceOptions,
   flowerOptions,
   interests,
   occasionOptions,
@@ -190,7 +191,7 @@ export function SuitePrefs({
         >
           <span>
             <span className="block text-[15px] font-medium text-ink">More choices</span>
-            <span className="block text-[13.5px] text-ink-3">Linen, scent, flowers, curtains, table, fridge and notes</span>
+            <span className="block text-[13.5px] text-ink-3">Linen, scent, flowers, curtains, terrace, table, fridge and notes</span>
           </span>
           <ChevronDown className="size-5 shrink-0 text-ink-3" aria-hidden />
         </button>
@@ -233,6 +234,16 @@ export function SuitePrefs({
         <div className="flex flex-wrap gap-2">
           {curtainOptions.map((o) => (
             <Chip key={o.id} selected={prefs.curtains === o.id} onClick={() => onChange({ curtains: o.id })}>
+              {o.label}
+            </Chip>
+          ))}
+        </div>
+      </Field>
+
+      <Field label="On the terrace">
+        <div className="flex flex-wrap gap-2">
+          {terraceOptions.map((o) => (
+            <Chip key={o.id} selected={(prefs.terrace ?? "loungers") === o.id} onClick={() => onChange({ terrace: o.id })}>
               {o.label}
             </Chip>
           ))}

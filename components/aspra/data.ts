@@ -278,6 +278,7 @@ export type Light = "morning" | "sunset" | "night"
 export type Linen = "white" | "sand" | "sea"
 export type Curtains = "open" | "sheer"
 export type Welcome = "fruit" | "sweets" | "none"
+export type TerraceSetup = "loungers" | "dining"
 
 export type Prefs = {
   pace: Pace
@@ -289,6 +290,7 @@ export type Prefs = {
   linen: Linen
   curtains: Curtains
   welcome: Welcome
+  terrace: TerraceSetup
   flowers: Flowers
   scent: Scent
   fridge: Fridge
@@ -307,6 +309,7 @@ export const defaultPrefs: Prefs = {
   linen: "white",
   curtains: "open",
   welcome: "fruit",
+  terrace: "loungers",
   flowers: "bougainvillea",
   scent: "none",
   fridge: "local-wine",
@@ -342,6 +345,11 @@ export const linenOptions: Array<{ id: Linen; label: string; detail: string; swa
 export const curtainOptions: Array<{ id: Curtains; label: string; detail: string }> = [
   { id: "open", label: "Open to the sea", detail: "You walk in to the view and the light" },
   { id: "sheer", label: "Sheers drawn", detail: "Soft light, more privacy, they move in the breeze" },
+]
+
+export const terraceOptions: Array<{ id: TerraceSetup; label: string; detail: string }> = [
+  { id: "loungers", label: "Two loungers", detail: "Under the reed pergola, facing the bay" },
+  { id: "dining", label: "Table for two", detail: "Breakfast and dinner outside, in the shade" },
 ]
 
 export const welcomeOptions: Array<{ id: Welcome; label: string; detail: string }> = [
@@ -443,7 +451,7 @@ export type Profile = {
 
 export const sampleProfiles: Record<GuestKind, Profile> = {
   new: {
-    guest: { firstName: "", lastName: "", email: "" },
+    guest: { firstName: "Maya", lastName: "Sorensen", email: "maya.sorensen@example.com" },
     booking: null,
     prefs: defaultPrefs,
     plan: [],

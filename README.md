@@ -34,9 +34,9 @@ Guests can walk through their suite before they arrive and set it up. The suite 
 
 ![The plunge pool suite in 3D at sunset, with hotspots and the settings dock](docs/screenshots/suite-3d-desktop.jpg)
 
-The room is a hand-plastered barrel vault cut into the cliff, with a deep arch onto a terrace 14 m above the sea. Inside there is a built-in plaster wardrobe with arched bays, linen robes and cane doors. Outside there is a pergola, loungers, bougainvillea over the arch, a plunge pool for the pool suite and villa, an animated sea, and the hotel caique in the bay.
+The room is a hand-plastered barrel vault cut into the cliff, with a deep arch onto a terrace 14 m above the sea. Inside there is a built-in plaster wardrobe with arched bays, linen robes and cane doors. Outside there is a pergola, loungers or a table for two, an outdoor rain shower against the cliff that runs when you stand near it, bougainvillea over the arch, a plunge pool for the pool suite and villa, an animated sea, and the hotel caique in the bay.
 
-Nine settings, each with a hotspot in the room. Every choice changes the model straight away:
+Ten settings, each with a hotspot. Every choice changes the model straight away, with a short settle so you see it land:
 
 - Bed: one king or two singles
 - Pillows: goose feather, feather free, firm latex or buckwheat, each modelled with its own loft and shape
@@ -47,12 +47,13 @@ Nine settings, each with a hotspot in the room. Every choice changes the model s
 - Scent: a reed diffuser in the wall niche, with drifting particles in the scent's colour
 - On the table: figs and grapes, loukoumi and baklava with coffee cups, or water
 - Minibar: island wine, no alcohol, children's drinks or empty, set out on top of the cabinet
+- Terrace: two loungers or a table for two under the pergola
 
-The viewer has three times of day (morning, sunset, night with a moon, stars, lamps and a lit pool), four places to stand (door, bed, wardrobe, terrace), and a guided mode that steps through all nine settings. Graphics run in two modes: High adds ambient occlusion, bloom, soft shadows and a vignette, Light skips them for older phones. Auto picks one and drops to Light if the frame rate falls. Devices without WebGL get the same choices without the 3D view.
+The viewer has three times of day (morning, sunset, night with a moon, stars, lamps and a lit pool), eight places to stand (door, wardrobe, bed, window, terrace, pergola, sea wall, shower), and a guided mode that steps through all ten settings. Tap a ring on the floor to walk there. Walks between the room and the terrace go through the arch, and a small floor plan shows where you are and which way you face. Graphics run in two modes: High adds ambient occlusion, bloom, soft shadows and a vignette, Light skips them for older phones. Auto picks one and drops to Light if the frame rate falls. Devices without WebGL get the same choices without the 3D view.
 
 The tour opens from the suite cards and the "Set up your suite" step in booking, from the booked guest's preparation step, from Today and from Plan. In the booking flow choices go into the booking draft. After booking they save to the guest's profile.
 
-File map: `scene.tsx` (canvas, camera, hotspots, effects), `environment.tsx` (sky, sea, terrace, lighting), `furniture.tsx` (everything in the room), `geometry.ts` and `textures.ts` (procedural shapes and materials), `suite-tour.tsx` (the interface).
+File map: `scene.tsx` (canvas, camera, hotspots, floor rings, effects), `spots.ts` (places to stand), `floor-plan.tsx` (the small plan), `environment.tsx` (sky, sea, terrace, lighting), `furniture.tsx` (everything in the room), `geometry.ts` and `textures.ts` (procedural shapes and materials), `suite-tour.tsx` (the interface).
 
 ## Screen sizes
 
