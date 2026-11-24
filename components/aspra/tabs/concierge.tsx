@@ -168,13 +168,13 @@ export function ConciergeTab() {
 
   return (
     <div className="mx-auto flex min-h-[100svh] w-full max-w-[760px] flex-col text-ink lg:min-h-[calc(100svh-24px)]">
-      <header className="sticky top-0 z-[var(--z-nav)] flex items-center gap-3 border-b border-white/70 bg-white/45 px-5 pb-3 pt-[max(env(safe-area-inset-top),12px)] backdrop-blur-xl lg:rounded-[28px] lg:border lg:border-white/80 lg:py-3">
+      <header className="sticky top-0 z-[var(--z-nav)] flex items-center gap-3 border-b border-white/70 bg-white/45 px-5 pb-3 pt-[max(env(safe-area-inset-top),12px)] backdrop-blur-xl lg:rounded-3xl lg:border lg:border-white/80 lg:py-3">
         <span className="grid size-11 place-items-center rounded-full bg-ink text-white">
           <ArchMark className="size-6" />
         </span>
         <div className="min-w-0 flex-1">
-          <h1 className="text-[17px] font-semibold">Nefeli</h1>
-          <p className="flex items-center gap-1.5 text-[13px] text-ink-3">
+          <h1 className="text-lg font-semibold">Nefeli</h1>
+          <p className="flex items-center gap-1.5 text-sm text-ink-3">
             <span className="size-2 rounded-full bg-olive" aria-hidden />
             AI concierge, any hour
           </p>
@@ -191,10 +191,10 @@ export function ConciergeTab() {
       <div className="flex-1 px-5 pb-[calc(220px+env(safe-area-inset-bottom))] pt-6 lg:pb-40" aria-live="polite">
         {empty && (
           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: EASE }}>
-            <h2 className="font-display text-[34px] leading-[1.02]">
+            <h2 className="font-display text-4xl leading-[1.02]">
               {greeting(ctx)}
             </h2>
-            <p className="mt-3 max-w-[38ch] text-[15px] leading-relaxed text-ink-2">
+            <p className="mt-3 max-w-[38ch] text-base leading-relaxed text-ink-2">
               I am Aspra's AI concierge. I know your booking and what you like. Ask me to plan a day, book a table or the boat, or send something to your suite. {hotel.humanConcierge} and the reception team are here all night if you would rather talk to a person.
             </p>
             <ul className="mt-7 space-y-2">
@@ -202,7 +202,7 @@ export function ConciergeTab() {
                 <li key={p}>
                   <button
                     onClick={() => send(p)}
-                    className="glass flex min-h-12 w-full items-center justify-between gap-3 rounded-2xl px-4 py-3 text-left text-[15px] transition-colors hover:bg-white/85"
+                    className="glass flex min-h-12 w-full items-center justify-between gap-3 rounded-2xl px-4 py-3 text-left text-base transition-colors hover:bg-white/85"
                   >
                     {p}
                     <ChevronRight className="size-4 shrink-0 text-sea" aria-hidden />
@@ -223,13 +223,13 @@ export function ConciergeTab() {
               className={cn("flex flex-col", m.role === "user" ? "items-end" : "items-start")}
             >
               {m.role === "user" ? (
-                <div className="max-w-[82%] md:max-w-[70%] rounded-3xl rounded-br-lg bg-sea px-4 py-2.5 text-[15px] text-white">
+                <div className="max-w-[82%] md:max-w-[70%] rounded-3xl rounded-br-lg bg-sea px-4 py-2.5 text-base text-white">
                   {m.text}
                 </div>
               ) : (
                 <div className="w-full max-w-[94%] md:max-w-[80%]">
                   {m.text ? (
-                    <div className="glass whitespace-pre-line rounded-3xl rounded-bl-lg px-4 py-3 text-[15.5px] leading-relaxed text-ink">{m.text}</div>
+                    <div className="glass whitespace-pre-line rounded-3xl rounded-bl-lg px-4 py-3 text-base leading-relaxed text-ink">{m.text}</div>
                   ) : (
                     <div className="flex h-6 items-center gap-1.5" aria-label="Nefeli is writing">
                       {[0, 1, 2].map((i) => (
@@ -253,7 +253,7 @@ export function ConciergeTab() {
                               disabled={done}
                               onClick={() => runAction(m, i, a)}
                               className={cn(
-                                "inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-[14px] font-medium transition-colors",
+                                "inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-medium transition-colors",
                                 done ? "bg-ink/5 text-ink-2" : "bg-ink text-white hover:bg-ink-2",
                               )}
                             >
@@ -296,14 +296,14 @@ export function ConciergeTab() {
                 key={p}
                 onClick={() => send(p)}
                 disabled={busy}
-                className="glass-strong h-10 shrink-0 rounded-full px-3.5 text-[13.5px] text-ink-2 disabled:opacity-40"
+                className="glass-strong h-10 shrink-0 rounded-full px-3.5 text-sm text-ink-2 disabled:opacity-40"
               >
                 {p}
               </button>
             ))}
           </div>
         )}
-        <div className="glass-strong flex items-end gap-2 rounded-[26px] p-1.5 pl-4 shadow-[0_6px_8px_-4px_rgb(10_12_17/0.14)] focus-within:border-sea">
+        <div className="glass-strong flex items-end gap-2 rounded-3xl p-1.5 pl-4 shadow-[0_6px_8px_-4px_rgb(10_12_17/0.14)] focus-within:border-sea">
           <label htmlFor="concierge-input" className="sr-only">
             Message Nefeli
           </label>
@@ -319,7 +319,7 @@ export function ConciergeTab() {
               }
             }}
             placeholder="Message Nefeli"
-            className="max-h-28 min-h-[40px] flex-1 resize-none bg-transparent py-2.5 text-[16px] text-ink placeholder:text-ink-3 focus:outline-none"
+            className="max-h-28 min-h-[40px] flex-1 resize-none bg-transparent py-2.5 text-base text-ink placeholder:text-ink-3 focus:outline-none"
           />
           <button
             type="submit"

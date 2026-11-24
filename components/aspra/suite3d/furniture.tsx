@@ -601,7 +601,7 @@ export function Thermostat({ temperature }: { temperature: number }) {
         <meshStandardMaterial color={tone} emissive={tone} emissiveIntensity={2.2} toneMapped={false} />
       </mesh>
       <Html position={[-0.05, 0, 0]} center distanceFactor={1.3} zIndexRange={[10, 0]} pointerEvents="none">
-        <div className="pointer-events-none select-none text-[12px] font-semibold tabular-nums text-white">{temperature}°</div>
+        <div className="pointer-events-none select-none text-xs font-semibold tabular-nums text-white">{temperature}°</div>
       </Html>
     </group>
   )

@@ -27,8 +27,8 @@ import { Chip, IconButton, OptionRow, Segmented } from "./ui"
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <fieldset className="mb-7">
-      <legend className="mb-1 text-[16px] font-semibold text-ink">{label}</legend>
-      {hint && <p className="mb-3 text-[14px] leading-snug text-ink-3">{hint}</p>}
+      <legend className="mb-1 text-base font-semibold text-ink">{label}</legend>
+      {hint && <p className="mb-3 text-sm leading-snug text-ink-3">{hint}</p>}
       {!hint && <div className="mb-3" />}
       {children}
     </fieldset>
@@ -131,7 +131,7 @@ export function SuitePrefs({
   const temperature = (
       <Field label="Room temperature on arrival">
         <div className="flex items-center justify-between rounded-xl glass px-4 py-2">
-          <span className="flex items-center gap-2 text-[15px] text-ink-2">
+          <span className="flex items-center gap-2 text-base text-ink-2">
             <Thermometer className="size-4" aria-hidden /> Set to
           </span>
           <div className="flex items-center gap-3">
@@ -143,7 +143,7 @@ export function SuitePrefs({
             >
               <Minus className="size-4" />
             </IconButton>
-            <output aria-live="polite" className="w-12 text-center text-[18px] font-semibold tabular-nums">
+            <output aria-live="polite" className="w-12 text-center text-lg font-semibold tabular-nums">
               {prefs.temperature}°C
             </output>
             <IconButton
@@ -190,8 +190,8 @@ export function SuitePrefs({
           className="mb-7 flex min-h-14 w-full items-center justify-between gap-3 rounded-2xl glass px-4 py-3 text-left"
         >
           <span>
-            <span className="block text-[15px] font-medium text-ink">More choices</span>
-            <span className="block text-[13.5px] text-ink-3">Linen, scent, flowers, curtains, terrace, table, fridge and notes</span>
+            <span className="block text-base font-medium text-ink">More choices</span>
+            <span className="block text-sm text-ink-3">Linen, scent, flowers, curtains, terrace, table, fridge and notes</span>
           </span>
           <ChevronDown className="size-5 shrink-0 text-ink-3" aria-hidden />
         </button>
@@ -276,7 +276,7 @@ export function SuitePrefs({
           onChange={(e) => onChange({ note: e.target.value })}
           rows={3}
           placeholder="For example, oat milk with coffee"
-          className="w-full resize-none rounded-xl glass px-4 py-3 text-[15px] text-ink placeholder:text-ink-3 focus:border-sea focus:outline-none"
+          className="w-full resize-none rounded-xl glass px-4 py-3 text-base text-ink placeholder:text-ink-3 focus:border-sea focus:outline-none"
         />
       </Field>
         </>

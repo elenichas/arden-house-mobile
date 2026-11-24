@@ -57,7 +57,7 @@ export function TouchpointPanel({ touchpointId, onClose }: Props) {
             className={cn(
               "fixed bottom-0 inset-x-0 sm:inset-x-auto sm:right-4 z-50",
               "w-full sm:max-w-sm",
-              "rounded-t-[24px] overflow-hidden",
+              "rounded-t-2xl overflow-hidden",
               "bg-white ring-1 ring-border backdrop-blur-2xl",
               "shadow-[0_-20px_60px_-20px_rgba(0,0,0,0.12)]",
             )}
@@ -79,10 +79,10 @@ export function TouchpointPanel({ touchpointId, onClose }: Props) {
                   )
                 })()}
                 <div>
-                  <h2 className="font-display text-[18px] text-ink">
+                  <h2 className="font-display text-lg text-ink">
                     {tp.label}
                   </h2>
-                  <p className="mt-0.5 text-[12px] text-ink-3 leading-relaxed max-w-[260px]">
+                  <p className="mt-0.5 text-xs text-ink-3 leading-relaxed max-w-[260px]">
                     {tp.description}
                   </p>
                 </div>
@@ -105,17 +105,17 @@ export function TouchpointPanel({ touchpointId, onClose }: Props) {
                 <div
                   key={item.label}
                   className={cn(
-                    "flex items-center justify-between px-4 py-3.5 rounded-[14px]",
+                    "flex items-center justify-between px-4 py-3.5 rounded-lg",
                     "bg-chalk-2",
                     "hover:bg-chalk-2/60 transition-colors duration-300",
                     "cursor-pointer group",
                   )}
                 >
                   <div>
-                    <p className="font-display text-[14px] text-ink">
+                    <p className="font-display text-sm text-ink">
                       {item.label}
                     </p>
-                    <p className="mt-0.5 text-[11.5px] text-ink-3">
+                    <p className="mt-0.5 text-xs text-ink-3">
                       {item.hint}
                     </p>
                   </div>
@@ -130,9 +130,9 @@ export function TouchpointPanel({ touchpointId, onClose }: Props) {
               <button
                 type="button"
                 className={cn(
-                  "w-full mt-4 py-3.5 rounded-[14px]",
+                  "w-full mt-4 py-3.5 rounded-lg",
                   "bg-sea hover:bg-sea/90 transition-colors duration-300",
-                  "font-display text-[14px] tracking-wide text-white",
+                  "font-display text-sm tracking-wide text-white",
                 )}
               >
                 Customise in the app

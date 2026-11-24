@@ -59,7 +59,7 @@ export function TimeOfDaySlider({
           className="w-36 sm:w-48 accent-sulphur-deep h-1 cursor-pointer appearance-none rounded-full bg-stone/40 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-sulphur-deep [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(180,140,60,0.4)] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white"
           aria-label="Time of day"
         />
-        <span className="text-[10.5px] font-display tracking-wider text-ink-3">
+        <span className="text-xs font-display tracking-wider text-ink-3">
           {label}
         </span>
       </div>

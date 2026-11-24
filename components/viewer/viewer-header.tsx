@@ -33,7 +33,7 @@ export function ViewerHeader({ fileName, onReset }: Props) {
         )}
       >
         <ArrowLeft className="h-4 w-4" strokeWidth={1.5} />
-        <span className="font-display text-[13px] tracking-wide">Aspra</span>
+        <span className="font-display text-sm tracking-wide">Aspra</span>
       </motion.a>
 
       {/* Centre — file name */}
@@ -49,7 +49,7 @@ export function ViewerHeader({ fileName, onReset }: Props) {
           )}
         >
           <Box className="h-3.5 w-3.5 text-sulphur-deep" strokeWidth={1.5} />
-          <span className="font-display text-[12px] text-ink-3 truncate max-w-[180px]">
+          <span className="font-display text-xs text-ink-3 truncate max-w-[180px]">
             {fileName}
           </span>
         </motion.div>
@@ -71,7 +71,7 @@ export function ViewerHeader({ fileName, onReset }: Props) {
           )}
         >
           <RotateCcw className="h-3.5 w-3.5" strokeWidth={1.5} />
-          <span className="font-display text-[12px] tracking-wide">New model</span>
+          <span className="font-display text-xs tracking-wide">New model</span>
         </motion.button>
       )}
     </header>

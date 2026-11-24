@@ -53,7 +53,7 @@ export function TodayTab() {
     <div className="pb-nav">
       {booking && (
         <div className="px-5 pb-4 pt-1 md:max-w-[460px]">
-          <p id="phase-label" className="mb-2 text-[13px] text-ink-3">
+          <p id="phase-label" className="mb-2 text-sm text-ink-3">
             The app changes with your trip. Preview each stage:
           </p>
           <Segmented<Phase>
@@ -92,14 +92,14 @@ function BeforeStay() {
       <section className="px-5 lg:row-span-3">
         <div className="relative overflow-hidden rounded-2xl">
           <Photo src={s.image} alt={`${s.name} at Aspra`} className="aspect-[4/5.2] w-full md:aspect-[16/10] lg:aspect-auto lg:h-[620px]" priority />
-          <div className="on-dark glass-smoke absolute inset-x-3 bottom-3 rounded-[20px] p-4 text-white md:right-auto md:max-w-[440px]">
-            <p className="text-[14px] font-medium text-white/85">
+          <div className="on-dark glass-smoke absolute inset-x-3 bottom-3 rounded-xl p-4 text-white md:right-auto md:max-w-[440px]">
+            <p className="text-sm font-medium text-white/85">
               {days} {days === 1 ? "day" : "days"} to Milos
             </p>
-            <h1 className="mt-1 font-display text-[30px] leading-[1.03]">
+            <h1 className="mt-1 font-display text-3xl leading-[1.03]">
               {guest.firstName ? `${guest.firstName}, your` : "Your"} {s.name.toLowerCase()} is booked.
             </h1>
-            <p className="mt-2 text-[14.5px] text-white/85">
+            <p className="mt-2 text-sm text-white/85">
               {formatDate(booking.checkIn, { weekday: "short", day: "numeric", month: "short" })} to{" "}
               {formatDate(booking.checkOut, { weekday: "short", day: "numeric", month: "short", year: "numeric" })}, {nights} nights. Ref {booking.ref}
             </p>
@@ -115,8 +115,8 @@ function BeforeStay() {
               {booking.arrival.by === "air" ? <Plane className="size-5" aria-hidden /> : <Ship className="size-5" aria-hidden />}
             </span>
             <div className="min-w-0 flex-1">
-              <div className="text-[15px] font-medium">{booking.arrival.detail}</div>
-              <div className="text-[14px] text-ink-3">
+              <div className="text-base font-medium">{booking.arrival.detail}</div>
+              <div className="text-sm text-ink-3">
                 Lands {formatDate(booking.checkIn, { weekday: "short", day: "numeric", month: "short" })} at {booking.arrival.time}
               </div>
             </div>
@@ -126,10 +126,10 @@ function BeforeStay() {
               {boat ? <Ship className="size-5" aria-hidden /> : <Car className="size-5" aria-hidden />}
             </span>
             <div className="min-w-0 flex-1">
-              <div className="text-[15px] font-medium">
+              <div className="text-base font-medium">
                 {boat ? "Our boat meets you at Adamas" : car ? "A driver meets you" : "No transfer booked yet"}
               </div>
-              <div className="text-[14px] leading-snug text-ink-3">
+              <div className="text-sm leading-snug text-ink-3">
                 {boat
                   ? "Captain Manolis waits at the west quay. 35 minutes along the coast to our jetty."
                   : car
@@ -151,7 +151,7 @@ function BeforeStay() {
         <div className="overflow-hidden rounded-2xl bg-sea-wash">
           <div className="flex gap-4 p-4">
             <BedDouble className="mt-0.5 size-5 shrink-0 text-sea" aria-hidden />
-            <p className="text-[15px] leading-relaxed">
+            <p className="text-base leading-relaxed">
               {prefs.bed === "king" ? "One king bed" : "Two single beds"},{" "}
               {pillowOptions.find((p) => p.id === prefs.pillow)?.label.toLowerCase()} pillows,{" "}
               {flowerOptions.find((f) => f.id === prefs.flowers)?.label.toLowerCase()} on the ledge,{" "}
@@ -162,7 +162,7 @@ function BeforeStay() {
           </div>
           <button
             onClick={() => setTourOpen(true)}
-            className="flex w-full items-center gap-3 border-t border-sea/15 px-4 py-3.5 text-left text-[15px] font-medium text-sea-deep hover:bg-sea/5"
+            className="flex w-full items-center gap-3 border-t border-sea/15 px-4 py-3.5 text-left text-base font-medium text-sea-deep hover:bg-sea/5"
           >
             <Box className="size-5" aria-hidden />
             <span className="flex-1">Walk through your suite in 3D</span>
@@ -179,7 +179,7 @@ function BeforeStay() {
             className="flex w-full items-center gap-4 rounded-2xl border border-dashed border-ink/25 p-4 text-left"
           >
             <Plus className="size-5 text-sea" aria-hidden />
-            <span className="flex-1 text-[15px]">
+            <span className="flex-1 text-base">
               Nothing yet. The boat to Kleftiko fills by May, so book it early.
             </span>
           </button>
@@ -191,8 +191,8 @@ function BeforeStay() {
                 <li key={p.id} className="flex items-center gap-3 rounded-xl glass p-2 pr-4">
                   <Photo src={e.image} alt="" className="size-14 rounded-lg" />
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-[15px] font-medium">{e.name}</div>
-                    <div className="text-[13.5px] text-ink-3">
+                    <div className="truncate text-base font-medium">{e.name}</div>
+                    <div className="text-sm text-ink-3">
                       {dayLabel(booking.checkIn, p.day)}, {p.time}
                     </div>
                   </div>
@@ -212,13 +212,13 @@ function BeforeStay() {
             onClick={() => setPackOpen((o) => !o)}
             className="flex w-full items-center justify-between gap-4 p-4 text-left"
           >
-            <span className="text-[15px] font-medium">What to bring to Milos in {formatDate(booking.checkIn, { month: "long" })}</span>
+            <span className="text-base font-medium">What to bring to Milos in {formatDate(booking.checkIn, { month: "long" })}</span>
             <ChevronDown className={cn("size-5 shrink-0 transition-transform", packOpen && "rotate-180")} aria-hidden />
           </button>
           {packOpen && (
             <ul className="space-y-3 border-t border-white/70 p-4">
               {packingList.map((item) => (
-                <li key={item} className="flex gap-3 text-[14.5px] leading-snug">
+                <li key={item} className="flex gap-3 text-sm leading-snug">
                   <span className="mt-[7px] size-1.5 shrink-0 rounded-full bg-sea" aria-hidden />
                   {item}
                 </li>
@@ -227,12 +227,12 @@ function BeforeStay() {
           )}
         </div>
 
-        <h3 className="mb-3 mt-6 text-[16px] font-semibold">Five words of Greek</h3>
+        <h3 className="mb-3 mt-6 text-base font-semibold">Five words of Greek</h3>
         <ul className="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5">
           {greekPhrases.map((p) => (
             <li key={p.greek} className="w-[150px] shrink-0 rounded-2xl bg-obsidian p-4 text-white">
-              <div className="font-display text-[22px] leading-tight">{p.greek}</div>
-              <div className="mt-2 text-[13px] leading-snug text-white/75">{p.english}</div>
+              <div className="font-display text-2xl leading-tight">{p.greek}</div>
+              <div className="mt-2 text-sm leading-snug text-white/75">{p.english}</div>
             </li>
           ))}
         </ul>
@@ -268,10 +268,10 @@ function DuringStay() {
   return (
     <div className="space-y-10 lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-2 lg:gap-y-10 lg:space-y-0">
       <section className="px-5 lg:col-span-2">
-        <p className="text-[14px] text-ink-3">
+        <p className="text-sm text-ink-3">
           {dayLabel(booking.checkIn, today)}, day {today + 1} of {nights}
         </p>
-        <h1 className="mt-1 font-display text-[38px] leading-[1.02]">
+        <h1 className="mt-1 font-display text-4xl leading-[1.02]">
           {greeting}{guest.firstName ? `, ${guest.firstName}` : ""}.
         </h1>
 
@@ -283,15 +283,15 @@ function DuringStay() {
             { k: "Sunset", v: conditions.sunset },
           ].map((c) => (
             <div key={c.k} className="rounded-xl glass py-3">
-              <dt className="text-[12.5px] text-ink-3">{c.k}</dt>
-              <dd className="mt-0.5 text-[17px] font-semibold tabular-nums">{c.v}</dd>
+              <dt className="text-xs text-ink-3">{c.k}</dt>
+              <dd className="mt-0.5 text-lg font-semibold tabular-nums">{c.v}</dd>
             </div>
           ))}
         </dl>
 
         <div className="mt-3 flex gap-3 rounded-2xl bg-sulphur/35 p-4">
           <Wind className="mt-0.5 size-5 shrink-0" aria-hidden />
-          <p className="text-[14.5px] leading-relaxed">
+          <p className="text-sm leading-relaxed">
             The meltemi is blowing from the north west. Sarakiniko will be rough. Tsigrado and Firiplaka on the south coast are sheltered and calm until 16:00.
           </p>
         </div>
@@ -318,7 +318,7 @@ function DuringStay() {
               <button
                 key={q.label}
                 onClick={() => (q.request ? addRequest(q.request) : notify(`Reception, 24 hours: ${hotel.receptionPhone}`))}
-                className="flex h-12 shrink-0 items-center gap-2 rounded-full bg-obsidian px-4 text-[14px] font-medium text-white active:scale-[0.98]"
+                className="flex h-12 shrink-0 items-center gap-2 rounded-full bg-obsidian px-4 text-sm font-medium text-white active:scale-[0.98]"
               >
                 <Icon className="size-4 text-sulphur" aria-hidden /> {q.label}
               </button>
@@ -328,18 +328,18 @@ function DuringStay() {
         {requests.length > 0 && (
           <ul className="mt-4 divide-y divide-border rounded-2xl glass" aria-live="polite">
             {requests.slice(0, 4).map((r) => (
-              <li key={r.id} className="flex items-center justify-between gap-3 px-4 py-3 text-[14.5px]">
+              <li key={r.id} className="flex items-center justify-between gap-3 px-4 py-3 text-sm">
                 <span className="min-w-0 flex-1 truncate">{r.label}</span>
                 {r.status === "sent" && (
                   <button
                     onClick={() => cancelRequest(r.id)}
                     aria-label={`Cancel request: ${r.label}`}
-                    className="-my-2 h-11 shrink-0 px-2 text-[13.5px] font-medium text-sea-deep underline-offset-4 hover:underline"
+                    className="-my-2 h-11 shrink-0 px-2 text-sm font-medium text-sea-deep underline-offset-4 hover:underline"
                   >
                     Cancel
                   </button>
                 )}
-                <span className={cn("shrink-0 rounded-full px-2.5 py-1 text-[12.5px] font-medium", r.status === "sent" ? "bg-chalk-2 text-ink-2" : "bg-sea-wash text-sea-deep")}>
+                <span className={cn("shrink-0 rounded-full px-2.5 py-1 text-xs font-medium", r.status === "sent" ? "bg-chalk-2 text-ink-2" : "bg-sea-wash text-sea-deep")}>
                   {r.status === "sent" ? "Sent" : "On its way"}
                 </span>
               </li>
@@ -355,12 +355,12 @@ function DuringStay() {
             <li key={e.id} className="w-[68%] shrink-0 snap-start md:w-[280px] lg:w-auto">
               <div className="relative overflow-hidden rounded-2xl">
                 <Photo src={e.image} alt="" className="aspect-[4/5] w-full" />
-                <span className="glass absolute left-3 top-3 rounded-full px-2.5 py-1 text-[12.5px] font-medium">
+                <span className="glass absolute left-3 top-3 rounded-full px-2.5 py-1 text-xs font-medium">
                   {reasonFor(e, prefs)}
                 </span>
               </div>
-              <h3 className="mt-3 text-[16px] font-semibold leading-snug">{e.name}</h3>
-              <p className="mt-0.5 text-[13.5px] text-ink-3">
+              <h3 className="mt-3 text-base font-semibold leading-snug">{e.name}</h3>
+              <p className="mt-0.5 text-sm text-ink-3">
                 {e.duration} · {priceLabel(e)}
               </p>
               <Button
@@ -411,14 +411,14 @@ function TimelineItem({
     <li className="relative pb-4">
       <span className="absolute -left-[27px] top-1 grid size-3.5 place-items-center rounded-full border-2 border-chalk bg-sea" aria-hidden />
       <div className="flex items-baseline gap-3">
-        <span className="w-12 shrink-0 text-[14px] font-semibold tabular-nums">{time}</span>
+        <span className="w-12 shrink-0 text-sm font-semibold tabular-nums">{time}</span>
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2 text-[15px] font-medium">
+          <div className="flex items-center gap-2 text-base font-medium">
             {icon}
             {title}
             {status && <StatusPill status={status} />}
           </div>
-          <p className="mt-0.5 text-[14px] leading-snug text-ink-3">{detail}</p>
+          <p className="mt-0.5 text-sm leading-snug text-ink-3">{detail}</p>
         </div>
       </div>
     </li>
@@ -429,7 +429,7 @@ export function StatusPill({ status }: { status: "confirmed" | "requested" }) {
   return (
     <span
       className={cn(
-        "shrink-0 rounded-full px-2.5 py-1 text-[12px] font-medium",
+        "shrink-0 rounded-full px-2.5 py-1 text-xs font-medium",
         status === "confirmed" ? "bg-sea-wash text-sea-deep" : "bg-sulphur/40 text-ink",
       )}
     >
@@ -450,12 +450,12 @@ function AfterStay() {
       <section className="px-5 lg:col-span-2">
         <div className="relative overflow-hidden rounded-2xl">
           <Photo src={IMG.keepsake} alt="Olive oil, thyme honey and oregano from Milos on a kitchen table" className="aspect-[4/5.2] w-full md:aspect-[16/8] lg:aspect-[16/6]" priority />
-          <div className="on-dark glass-smoke absolute inset-x-3 bottom-3 rounded-[20px] p-4 text-white md:right-auto md:max-w-[440px]">
-            <p className="text-[14px] font-medium text-white/85">Home again</p>
-            <h1 className="mt-1 font-display text-[30px] leading-[1.03]">
+          <div className="on-dark glass-smoke absolute inset-x-3 bottom-3 rounded-xl p-4 text-white md:right-auto md:max-w-[440px]">
+            <p className="text-sm font-medium text-white/85">Home again</p>
+            <h1 className="mt-1 font-display text-3xl leading-[1.03]">
               Welcome home{guest.firstName ? `, ${guest.firstName}` : ""}.
             </h1>
-            <p className="mt-2 text-[14.5px] text-white/85">
+            <p className="mt-2 text-sm text-white/85">
               {nights} nights in {suiteName}
               {booking && plan.length > 0 && `, ${plan.length} experiences`}. Your journal, recipes and island pantry are here.
             </p>
@@ -470,8 +470,8 @@ function AfterStay() {
 
       <section className="px-5">
         <div className="on-dark rounded-3xl bg-obsidian p-5 text-white">
-          <h2 className="font-display text-[28px] leading-tight">The same week next year</h2>
-          <p className="mt-2 text-[14.5px] leading-relaxed text-white/85">
+          <h2 className="font-display text-3xl leading-tight">The same week next year</h2>
+          <p className="mt-2 text-sm leading-relaxed text-white/85">
             We hold your suite and dates for 14 days after you leave. Your preferences come with you.
           </p>
           <Button
@@ -499,16 +499,16 @@ function AskNefeli({ title, prompts, onAsk, className }: { title: string; prompt
   return (
     <section className={cn("px-5", className)}>
       <div className="on-dark rounded-3xl bg-sea p-5 text-white">
-        <div className="flex items-center gap-2 text-[13.5px] text-white/70">
+        <div className="flex items-center gap-2 text-sm text-white/70">
           <Sparkles className="size-4" aria-hidden /> Nefeli, AI concierge, 24 hours
         </div>
-        <h2 className="mt-2 font-display text-[28px] leading-tight">{title}</h2>
+        <h2 className="mt-2 font-display text-3xl leading-tight">{title}</h2>
         <div className="mt-4 flex flex-wrap gap-2">
           {prompts.map((p) => (
             <button
               key={p}
               onClick={() => onAsk(p)}
-              className="min-h-11 rounded-full border border-white/25 bg-white/15 px-4 text-left text-[14px] backdrop-blur-md transition-colors hover:bg-white/25"
+              className="min-h-11 rounded-full border border-white/25 bg-white/15 px-4 text-left text-sm backdrop-blur-md transition-colors hover:bg-white/25"
             >
               {p}
             </button>

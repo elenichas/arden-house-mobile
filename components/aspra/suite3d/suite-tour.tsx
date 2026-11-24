@@ -268,7 +268,7 @@ export function SuiteTour({
             onSlow={() => setAutoQuality("light")}
           />
         ) : (
-          <div className="grid h-full place-items-center px-8 text-center text-[15px] text-white/80">
+          <div className="grid h-full place-items-center px-8 text-center text-base text-white/80">
             This device cannot show 3D. You can still set up your suite with the buttons below.
           </div>
         )}
@@ -298,8 +298,8 @@ export function SuiteTour({
                 />
                 <path d="M5 33h30" stroke="var(--sulphur)" strokeWidth="1.6" strokeLinecap="round" />
               </svg>
-              <p className="text-[15px] text-white/85">Building your suite</p>
-              <p className="max-w-[26ch] text-[13px] leading-snug text-white/60">This takes a few seconds the first time. Your choices are ready as soon as the room appears.</p>
+              <p className="text-base text-white/85">Building your suite</p>
+              <p className="max-w-[26ch] text-sm leading-snug text-white/60">This takes a few seconds the first time. Your choices are ready as soon as the room appears.</p>
             </div>
           </motion.div>
         )}
@@ -315,8 +315,8 @@ export function SuiteTour({
             <X className="size-5" />
           </IconButton>
           <div className="min-w-0 flex-1 px-1">
-            <h2 className="truncate font-display text-[23px] leading-tight">{suite.name}</h2>
-            <p className="truncate text-[12.5px] text-white/75">
+            <h2 className="truncate font-display text-2xl leading-tight">{suite.name}</h2>
+            <p className="truncate text-xs text-white/75">
               {suiteId === "villa" ? "Main bedroom" : `${suite.size} m²`}. {suite.view}
             </p>
           </div>
@@ -345,7 +345,7 @@ export function SuiteTour({
                 role="radio"
                 aria-checked={on}
                 onClick={() => setLight(o.id)}
-                className={cn("relative flex h-9 items-center gap-1.5 rounded-full px-3.5 text-[13px] font-medium transition-colors", on ? "text-obsidian" : "text-white/80")}
+                className={cn("relative flex h-9 items-center gap-1.5 rounded-full px-3.5 text-sm font-medium transition-colors", on ? "text-obsidian" : "text-white/80")}
               >
                 {on && <motion.span layoutId="tod" transition={{ duration: 0.35, ease: EASE }} className="absolute inset-0 rounded-full bg-white" />}
                 <Icon className="relative size-4" aria-hidden />
@@ -376,8 +376,8 @@ export function SuiteTour({
             transition={{ duration: 0.25, ease: EASE }}
             className="absolute right-4 top-[calc(max(env(safe-area-inset-top),12px)+52px)] z-40 w-[270px] origin-top-right rounded-3xl glass-strong p-4 text-ink shadow-[0_8px_8px_rgb(0_0_0/0.25)]"
           >
-            <h3 className="text-[15px] font-semibold">Graphics</h3>
-            <p className="mt-0.5 text-[13px] leading-snug text-ink-3">
+            <h3 className="text-base font-semibold">Graphics</h3>
+            <p className="mt-0.5 text-sm leading-snug text-ink-3">
               High adds soft shading, glow and sharper shadows. Light is smoother on older phones.
             </p>
             <div role="radiogroup" aria-label="Graphics quality" className="mt-3 grid grid-cols-3 gap-1 rounded-full bg-ink/[0.06] p-1">
@@ -390,22 +390,22 @@ export function SuiteTour({
                     setReady(false)
                     setMode(m)
                   }}
-                  className={cn("h-9 rounded-full text-[13.5px] font-medium capitalize transition-colors", mode === m ? "bg-white text-ink shadow-[0_1px_3px_rgb(0_0_0/0.12)]" : "text-ink-3")}
+                  className={cn("h-9 rounded-full text-sm font-medium capitalize transition-colors", mode === m ? "bg-white text-ink shadow-[0_1px_3px_rgb(0_0_0/0.12)]" : "text-ink-3")}
                 >
                   {m}
                 </button>
               ))}
             </div>
-            {mode === "auto" && <p className="mt-2 text-[12.5px] text-ink-3">Auto is using {autoQuality} on this device.</p>}
+            {mode === "auto" && <p className="mt-2 text-xs text-ink-3">Auto is using {autoQuality} on this device.</p>}
 
-            <h3 className="mt-5 text-[15px] font-semibold">Your choices</h3>
+            <h3 className="mt-5 text-base font-semibold">Your choices</h3>
             <button
               onClick={() => {
                 reset()
                 setSettingsOpen(false)
               }}
               disabled={changed === 0}
-              className="mt-2 flex h-11 w-full items-center gap-2 rounded-xl glass px-3.5 text-[14px] font-medium disabled:opacity-45"
+              className="mt-2 flex h-11 w-full items-center gap-2 rounded-full glass px-3.5 text-sm font-medium disabled:opacity-45"
             >
               <RotateCcw className="size-4" aria-hidden /> Reset to the hotel standard
             </button>
@@ -423,7 +423,7 @@ export function SuiteTour({
             transition={{ duration: 0.5, ease: EASE }}
             className="pointer-events-none absolute inset-x-0 top-[52%] z-30 flex justify-center px-6"
           >
-            <p className="glass-smoke flex items-center gap-2 rounded-full px-4 py-2.5 text-[13.5px]">
+            <p className="glass-smoke flex items-center gap-2 rounded-full px-4 py-2.5 text-sm">
               <Hand className="size-4 shrink-0 text-sulphur" aria-hidden /> Drag to look. Tap a dot to change it, a ring to walk.
             </p>
           </motion.div>
@@ -447,15 +447,15 @@ export function SuiteTour({
               exit={{ y: 60, opacity: 0 }}
               transition={{ duration: 0.35, ease: EASE }}
               aria-label={setting.label}
-              className="glass-strong flex max-h-[50svh] flex-col rounded-t-[28px] text-ink lg:h-full lg:max-h-none lg:rounded-[28px]"
+              className="glass-strong flex max-h-[50svh] flex-col rounded-t-3xl text-ink lg:h-full lg:max-h-none lg:rounded-3xl"
             >
               <div className="flex items-center gap-3 px-5 pt-4">
                 <span className="grid size-10 shrink-0 place-items-center rounded-full bg-sea-wash text-sea-deep">
                   <setting.icon className="size-5" aria-hidden />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <h3 className="font-display text-[24px] leading-none">{setting.label}</h3>
-                  <p className="mt-1 text-[12.5px] text-ink-3">
+                  <h3 className="font-display text-2xl leading-none">{setting.label}</h3>
+                  <p className="mt-1 text-xs text-ink-3">
                     {index + 1} of {SETTINGS.length}
                   </p>
                 </div>
@@ -467,7 +467,7 @@ export function SuiteTour({
               <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-3 pt-3">
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.div key={setting.id} initial={{ opacity: 0, x: 14 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -14 }} transition={{ duration: 0.2 }}>
-                    <p className="mb-3 text-[14px] leading-relaxed text-ink-2">{setting.intro}</p>
+                    <p className="mb-3 text-sm leading-relaxed text-ink-2">{setting.intro}</p>
                     <Options id={setting.id} prefs={prefs} onChange={onChange} />
                   </motion.div>
                 </AnimatePresence>
@@ -506,7 +506,7 @@ export function SuiteTour({
             >
               <div className="mx-auto w-full max-w-[760px]">
               <div role="group" aria-label="Stand somewhere else" className="no-scrollbar -mx-4 mb-4 flex items-center gap-1.5 overflow-x-auto px-4">
-                <span className="mr-1 shrink-0 text-[12.5px] text-white/75">Stand at</span>
+                <span className="mr-1 shrink-0 text-xs text-white/75">Stand at</span>
                 {(Object.keys(VIEWPOINTS) as ViewpointId[]).map((id) => ({ id, label: VIEWPOINTS[id].label, icon: SPOT_ICONS[id] })).map((v) => {
                   const on = viewpoint.id === v.id
                   const Icon = v.icon
@@ -516,7 +516,7 @@ export function SuiteTour({
                       onClick={() => go(v.id)}
                       aria-pressed={on}
                       className={cn(
-                        "flex h-9 shrink-0 items-center gap-1.5 rounded-full px-3 text-[13px] font-medium transition-colors",
+                        "flex h-9 shrink-0 items-center gap-1.5 rounded-full px-3 text-sm font-medium transition-colors",
                         on ? "bg-white text-obsidian" : "glass-smoke text-white hover:bg-obsidian/60",
                       )}
                     >
@@ -527,8 +527,8 @@ export function SuiteTour({
                 })}
               </div>
               <div className="mb-2 flex items-baseline justify-between">
-                <p className="text-[14px] font-medium">Set up your suite</p>
-                <p className="text-[12.5px] text-white/70">
+                <p className="text-sm font-medium">Set up your suite</p>
+                <p className="text-xs text-white/70">
                   {changed === 0 ? "Hotel standard" : `${changed} ${changed === 1 ? "change" : "changes"} from standard`}
                 </p>
               </div>
@@ -542,8 +542,8 @@ export function SuiteTour({
                       className="glass-smoke flex w-[104px] shrink-0 snap-start flex-col items-start gap-1.5 rounded-2xl p-3 text-left transition-colors hover:bg-obsidian/50"
                     >
                       <Icon className="size-5 text-sulphur" aria-hidden />
-                      <span className="text-[12px] text-white/70">{s.label}</span>
-                      <span className="line-clamp-1 text-[13.5px] font-medium leading-tight">{s.value(prefs)}</span>
+                      <span className="text-xs text-white/70">{s.label}</span>
+                      <span className="line-clamp-1 text-sm font-medium leading-tight">{s.value(prefs)}</span>
                     </button>
                   )
                 })}
@@ -597,8 +597,8 @@ function Choice({
     >
       <span className="grid size-12 shrink-0 place-items-center overflow-hidden rounded-xl bg-chalk-2 text-ink-2">{visual}</span>
       <span className="min-w-0 flex-1">
-        <span className="block text-[15px] font-medium leading-tight">{title}</span>
-        {detail && <span className="mt-0.5 block text-[13px] leading-snug text-ink-3">{detail}</span>}
+        <span className="block text-base font-medium leading-tight">{title}</span>
+        {detail && <span className="mt-0.5 block text-sm leading-snug text-ink-3">{detail}</span>}
       </span>
       <span
         aria-hidden
@@ -712,9 +712,9 @@ function Options({ id, prefs, onChange }: { id: SettingId; prefs: Prefs; onChang
             <IconButton label="Cooler" disabled={prefs.temperature <= 18} onClick={() => onChange({ temperature: prefs.temperature - 1 })} className="border border-ink/15 disabled:opacity-35">
               <Minus className="size-4" />
             </IconButton>
-            <output aria-live="polite" className="font-display text-[44px] leading-none tabular-nums">
+            <output aria-live="polite" className="font-display text-5xl leading-none tabular-nums">
               {prefs.temperature}
-              <span className="text-[22px] text-ink-3">°C</span>
+              <span className="text-2xl text-ink-3">°C</span>
             </output>
             <IconButton label="Warmer" disabled={prefs.temperature >= 26} onClick={() => onChange({ temperature: prefs.temperature + 1 })} className="border border-ink/15 disabled:opacity-35">
               <Plus className="size-4" />
@@ -734,12 +734,12 @@ function Options({ id, prefs, onChange }: { id: SettingId; prefs: Prefs; onChang
               className="absolute inset-0 h-8 w-full cursor-pointer opacity-0"
             />
           </div>
-          <div className="flex justify-between text-[12px] text-ink-3">
+          <div className="flex justify-between text-xs text-ink-3">
             <span>18° cool</span>
             <span>26° warm</span>
           </div>
         </div>
-        <ul className="mt-3 space-y-2 text-[14px]">
+        <ul className="mt-3 space-y-2 text-sm">
           <li className="flex items-center gap-2.5">
             <Layers className="size-4 shrink-0 text-sea" aria-hidden /> {bedding.label}
           </li>

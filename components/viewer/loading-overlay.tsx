@@ -46,11 +46,11 @@ export function LoadingOverlay({
             </div>
 
             <div className="text-center">
-              <p className="font-display text-[15px] text-ink-2">
+              <p className="font-display text-base text-ink-2">
                 Preparing your room…
               </p>
               {progress > 0 && progress < 100 && (
-                <p className="mt-1 text-[12px] text-ink-3 tabular-nums">
+                <p className="mt-1 text-xs text-ink-3 tabular-nums">
                   {progress}%
                 </p>
               )}
