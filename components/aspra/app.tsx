@@ -170,7 +170,7 @@ function TopBar() {
         <button
           onClick={() => setProfileOpen(true)}
           aria-label="Your profile and preferences"
-          className="grid size-11 place-items-center rounded-full bg-sea text-[14px] font-semibold uppercase text-white"
+          className="grid size-11 place-items-center rounded-full bg-sea text-sm font-semibold uppercase text-white"
         >
           {initials}
         </button>
@@ -186,7 +186,7 @@ function SideNav({ dark }: { dark: boolean }) {
   const name = [guest.firstName, guest.lastName].filter(Boolean).join(" ") || "Guest"
   return (
     <aside className={cn("fixed inset-y-0 left-0 z-[var(--z-nav)] hidden w-[272px] p-4 lg:block", dark && "on-dark")}>
-      <div className={cn("flex h-full flex-col rounded-[28px] p-4 transition-colors duration-500", dark ? "glass-smoke text-white" : "glass-strong")}>
+      <div className={cn("flex h-full flex-col rounded-3xl p-4 transition-colors duration-500", dark ? "glass-smoke text-white" : "glass-strong")}>
         <Wordmark tone={dark ? "light" : "dark"} className="px-2 py-2" />
         <nav aria-label="Main" className="mt-6">
           <ul className="space-y-1">
@@ -199,7 +199,7 @@ function SideNav({ dark }: { dark: boolean }) {
                     aria-current={active ? "page" : undefined}
                     onClick={() => setTab(t.id)}
                     className={cn(
-                      "flex h-12 w-full items-center gap-3 rounded-full px-4 text-[15px] font-medium transition-colors",
+                      "flex h-12 w-full items-center gap-3 rounded-full px-4 text-base font-medium transition-colors",
                       active
                         ? dark
                           ? "bg-white text-obsidian"
@@ -212,7 +212,7 @@ function SideNav({ dark }: { dark: boolean }) {
                     <Icon className="size-5" strokeWidth={active ? 2.2 : 1.8} aria-hidden />
                     <span className="flex-1 text-left">{t.label}</span>
                     {t.id === "plan" && plan.length > 0 && (
-                      <span className="grid h-5 min-w-5 place-items-center rounded-full bg-sea px-1.5 text-[11px] font-semibold text-white">{plan.length}</span>
+                      <span className="grid h-5 min-w-5 place-items-center rounded-full bg-sea px-1.5 text-xs font-semibold text-white">{plan.length}</span>
                     )}
                     {t.id === "concierge" && <span className="size-2 rounded-full bg-[oklch(0.75_0.15_150)]" aria-label="Online" />}
                   </button>
@@ -226,10 +226,10 @@ function SideNav({ dark }: { dark: boolean }) {
           onClick={() => setProfileOpen(true)}
           className={cn("flex items-center gap-3 rounded-full p-1.5 pr-4 text-left transition-colors", dark ? "hover:bg-white/10" : "hover:bg-ink/5")}
         >
-          <span className="grid size-10 shrink-0 place-items-center rounded-full bg-sea text-[13px] font-semibold uppercase text-white">{initials}</span>
+          <span className="grid size-10 shrink-0 place-items-center rounded-full bg-sea text-sm font-semibold uppercase text-white">{initials}</span>
           <span className="min-w-0">
-            <span className="block truncate text-[14.5px] font-medium">{name}</span>
-            <span className={cn("block text-[12.5px]", dark ? "text-white/70" : "text-ink-3")}>Preferences</span>
+            <span className="block truncate text-sm font-medium">{name}</span>
+            <span className={cn("block text-xs", dark ? "text-white/70" : "text-ink-3")}>Preferences</span>
           </span>
         </button>
       </div>
@@ -258,7 +258,7 @@ function TabBar({ dark }: { dark: boolean }) {
                 aria-selected={active}
                 onClick={() => setTab(t.id)}
                 className={cn(
-                  "relative flex h-[60px] w-full flex-col items-center justify-center gap-0.5 pb-1.5 text-[11.5px] font-medium transition-colors",
+                  "relative flex h-[60px] w-full flex-col items-center justify-center gap-0.5 pb-1.5 text-xs font-medium transition-colors",
                   dark ? (active ? "text-white" : "text-white/60") : active ? "text-ink" : "text-ink-3",
                 )}
               >
@@ -268,7 +268,7 @@ function TabBar({ dark }: { dark: boolean }) {
                     <span className="absolute -right-1 -top-0.5 size-2 rounded-full bg-olive ring-2 ring-white" aria-hidden />
                   )}
                   {t.id === "plan" && plan.length > 0 && (
-                    <span className="absolute -right-2.5 -top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-sea px-1 text-[10px] font-semibold text-white">
+                    <span className="absolute -right-2.5 -top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-sea px-1 text-xs font-semibold text-white">
                       {plan.length}
                     </span>
                   )}
@@ -317,7 +317,7 @@ function ProfileSheet({ onSwitchGuest }: { onSwitchGuest: () => void }) {
         </div>
       }
     >
-      <p className="mb-5 text-[14.5px] leading-relaxed text-ink-2">
+      <p className="mb-5 text-sm leading-relaxed text-ink-2">
         Your preferences travel with you to every stay. Nefeli uses them to plan your days, and housekeeping uses them to set up your suite.
       </p>
       {store.booking && (
@@ -373,7 +373,7 @@ function Toast() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
             transition={{ duration: 0.35, ease: EASE }}
-            className="pointer-events-auto flex max-w-[420px] items-center gap-2 rounded-2xl border border-white/15 bg-obsidian/85 py-1.5 pl-4 pr-1.5 text-[14px] text-white backdrop-blur-xl"
+            className="pointer-events-auto flex max-w-[420px] items-center gap-2 rounded-2xl border border-white/15 bg-obsidian/85 py-1.5 pl-4 pr-1.5 text-sm text-white backdrop-blur-xl"
           >
             <span className="py-1.5 pr-2">{toast.text}</span>
             {toast.action && (
@@ -382,7 +382,7 @@ function Toast() {
                   toast.action?.run()
                   dismissToast()
                 }}
-                className="h-11 shrink-0 rounded-xl px-3 text-[14px] font-semibold text-sulphur hover:bg-white/10"
+                className="h-11 shrink-0 rounded-xl px-3 text-sm font-semibold text-sulphur hover:bg-white/10"
               >
                 {toast.action.label}
               </button>

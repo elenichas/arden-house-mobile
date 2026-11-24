@@ -29,7 +29,7 @@ export function Wordmark({ className, tone = "dark" }: { className?: string; ton
       )}
     >
       <ArchMark className="size-6" />
-      <span className="font-display text-[22px] leading-none">Aspra</span>
+      <span className="font-display text-2xl leading-none">Aspra</span>
     </span>
   )
 }
@@ -51,9 +51,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function 
       ref={ref}
       className={cn(
         "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-[background-color,color,transform,opacity] duration-200 active:scale-[0.98] disabled:opacity-45 disabled:active:scale-100",
-        size === "lg" && "h-14 px-7 text-[16px]",
-        size === "md" && "h-12 px-5 text-[15px]",
-        size === "sm" && "h-9 px-4 text-[14px]",
+        size === "lg" && "h-14 px-7 text-base",
+        size === "md" && "h-12 px-5 text-base",
+        size === "sm" && "h-9 px-4 text-sm",
         block && "w-full",
         variant === "primary" && "bg-ink text-white hover:bg-obsidian-3",
         variant === "dark" && "bg-obsidian text-white hover:bg-obsidian-2",
@@ -134,7 +134,7 @@ export function Chip({
       aria-pressed={selected}
       onClick={onClick}
       className={cn(
-        "inline-flex min-h-11 items-center gap-1.5 rounded-full border px-4 text-[14px] font-medium transition-colors",
+        "inline-flex min-h-11 items-center gap-1.5 rounded-full border px-4 text-sm font-medium transition-colors",
         tone === "light" &&
           (selected
             ? "border-sea bg-sea text-white"
@@ -184,17 +184,17 @@ export function OptionRow({
         aria-hidden
         className={cn(
           "grid size-5 shrink-0 place-items-center border-2 transition-colors",
-          role === "radio" ? "rounded-full" : "rounded-[5px]",
+          role === "radio" ? "rounded-full" : "rounded-xs",
           selected ? "border-sea bg-sea text-white" : "border-ink/25",
         )}
       >
         {selected && <Check className="size-3" strokeWidth={3} />}
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block text-[15px] font-medium text-ink">{title}</span>
-        {detail && <span className="mt-0.5 block text-[13.5px] leading-snug text-ink-3">{detail}</span>}
+        <span className="block text-base font-medium text-ink">{title}</span>
+        {detail && <span className="mt-0.5 block text-sm leading-snug text-ink-3">{detail}</span>}
       </span>
-      {aside && <span className="shrink-0 text-[14px] font-medium text-ink-2">{aside}</span>}
+      {aside && <span className="shrink-0 text-sm font-medium text-ink-2">{aside}</span>}
     </button>
   )
 }
@@ -219,8 +219,8 @@ export function Counter({
   return (
     <div className="flex items-center justify-between gap-4 py-3">
       <div>
-        <div className="text-[15px] font-medium">{label}</div>
-        {hint && <div className="text-[13px] text-ink-3">{hint}</div>}
+        <div className="text-base font-medium">{label}</div>
+        {hint && <div className="text-sm text-ink-3">{hint}</div>}
       </div>
       <div className="flex items-center gap-3">
         <IconButton
@@ -231,7 +231,7 @@ export function Counter({
         >
           <Minus className="size-4" />
         </IconButton>
-        <output aria-live="polite" className="w-5 text-center text-[16px] font-semibold tabular-nums">
+        <output aria-live="polite" className="w-5 text-center text-base font-semibold tabular-nums">
           {value}
         </output>
         <IconButton
@@ -282,7 +282,7 @@ export function Segmented<T extends string>({
             aria-checked={active}
             onClick={() => onChange(o.id)}
             className={cn(
-              "relative h-9 rounded-full text-[13.5px] font-medium transition-colors",
+              "relative h-9 rounded-full text-sm font-medium transition-colors",
               tone === "light" ? (active ? "text-ink" : "text-ink-3") : active ? "text-obsidian" : "text-white/75",
             )}
           >
@@ -336,7 +336,7 @@ export function FlowHeader({
         ) : (
           <span className="size-11" />
         )}
-        <div className={cn("flex-1 text-center text-[14px] font-medium", tone === "light" ? "text-ink-2" : "text-white/80")}>
+        <div className={cn("flex-1 text-center text-sm font-medium", tone === "light" ? "text-ink-2" : "text-white/80")}>
           {title}
         </div>
         {onClose ? (
@@ -412,10 +412,10 @@ export function Sheet({
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ duration: 0.45, ease: EASE }}
-            className="glass-strong relative flex max-h-[90svh] w-full max-w-[440px] flex-col rounded-t-[28px] md:max-h-[84svh] md:max-w-[560px] md:rounded-[28px]"
+            className="glass-strong relative flex max-h-[90svh] w-full max-w-[440px] flex-col rounded-t-3xl md:max-h-[84svh] md:max-w-[560px] md:rounded-3xl"
           >
             <div className="flex items-center justify-between px-5 pb-2 pt-4">
-              <h2 className="font-display text-[26px]">{title}</h2>
+              <h2 className="font-display text-2xl">{title}</h2>
               <IconButton label="Close" onClick={onClose} className="-mr-2 hover:bg-ink/5">
                 <X className="size-5" />
               </IconButton>
@@ -446,7 +446,7 @@ export function SectionTitle({
 }) {
   return (
     <div className={cn("mb-3 flex items-end justify-between gap-4", className)}>
-      <h2 className="font-display text-[26px] text-ink">{children}</h2>
+      <h2 className="font-display text-2xl text-ink">{children}</h2>
       {action}
     </div>
   )
@@ -465,7 +465,7 @@ export function TextLink({
     <button
       onClick={onClick}
       className={cn(
-        "min-h-11 shrink-0 text-[14px] font-medium text-sea underline-offset-4 hover:underline",
+        "min-h-11 shrink-0 text-sm font-medium text-sea underline-offset-4 hover:underline",
         className,
       )}
     >
@@ -499,7 +499,7 @@ export function FullScreen({
           No backdrop blur or transform here, so fixed children such as the 3D tour can still cover the viewport. */}
       <div
         className={cn(
-          "h-full w-full overflow-y-auto md:h-[min(900px,calc(100svh-48px))] md:w-[640px] md:rounded-[32px] md:shadow-[0_8px_8px_-4px_rgb(10_12_17/0.18)]",
+          "h-full w-full overflow-y-auto md:h-[min(900px,calc(100svh-48px))] md:w-[640px] md:rounded-4xl md:shadow-[0_8px_8px_-4px_rgb(10_12_17/0.18)]",
           dark ? "" : "md:border md:border-white/80 md:bg-white/60",
           className,
         )}

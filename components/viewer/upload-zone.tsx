@@ -57,10 +57,10 @@ export function UploadZone({ onFile }: { onFile: (file: File) => void }) {
         transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 0.61, 0.36, 1] }}
         className="text-center"
       >
-        <h1 className="font-display text-[28px] leading-tight tracking-tight text-ink">
+        <h1 className="font-display text-3xl leading-tight tracking-tight text-ink">
           Room Viewer
         </h1>
-        <p className="mt-2 max-w-xs font-display text-[15px] text-ink-3 leading-relaxed">
+        <p className="mt-2 max-w-xs font-display text-base text-ink-3 leading-relaxed">
           Upload a .glb model of your hotel room to explore it in 3D with interactive touchpoints.
         </p>
       </motion.div>
@@ -80,7 +80,7 @@ export function UploadZone({ onFile }: { onFile: (file: File) => void }) {
         onDrop={handleDrop}
         className={cn(
           "group relative flex flex-col items-center justify-center gap-5",
-          "w-full max-w-sm aspect-[4/3] rounded-[22px] cursor-pointer",
+          "w-full max-w-sm aspect-[4/3] rounded-2xl cursor-pointer",
           "transition-all duration-500 ease-out",
           dragging
             ? "border-2 border-dashed border-sulphur/60 bg-sulphur/[0.08]"
@@ -101,10 +101,10 @@ export function UploadZone({ onFile }: { onFile: (file: File) => void }) {
         </div>
 
         <div className="text-center px-6">
-          <p className="font-display text-[15px] text-ink-2">
+          <p className="font-display text-base text-ink-2">
             {dragging ? "Drop your model here" : "Drag & drop a .glb file"}
           </p>
-          <p className="mt-1 text-[12px] text-ink-3">
+          <p className="mt-1 text-xs text-ink-3">
             or click to browse · up to {MAX_SIZE_MB} MB
           </p>
         </div>
@@ -123,7 +123,7 @@ export function UploadZone({ onFile }: { onFile: (file: File) => void }) {
         <motion.div
           initial={{ opacity: 0, y: 4 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-2 text-[13px] text-destructive"
+          className="flex items-center gap-2 text-sm text-destructive"
         >
           <AlertCircle className="h-4 w-4 shrink-0" />
           {error}
@@ -137,7 +137,7 @@ export function UploadZone({ onFile }: { onFile: (file: File) => void }) {
         transition={{ duration: 0.8, delay: 0.5 }}
         className="max-w-xs text-center space-y-1"
       >
-        <p className="text-[11.5px] text-ink-3/70 leading-relaxed">
+        <p className="text-xs text-ink-3/70 leading-relaxed">
           For best results, optimise your Rhino model through Blender and export
           as a Draco-compressed .glb. Aim for under 50 MB and 300K triangles.
         </p>

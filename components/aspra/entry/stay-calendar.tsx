@@ -87,8 +87,8 @@ export function StayCalendar({
           <ChevronLeft className="size-5" aria-hidden />
         </button>
         <div className="text-center">
-          <div className="text-[16px] font-semibold" aria-live="polite">{title}</div>
-          <div className={cn("text-[12.5px]", CALM_MONTHS.has(month.slice(5)) ? "font-medium text-sea-deep" : "text-ink-3")}>
+          <div className="text-base font-semibold" aria-live="polite">{title}</div>
+          <div className={cn("text-xs", CALM_MONTHS.has(month.slice(5)) ? "font-medium text-sea-deep" : "text-ink-3")}>
             {CALM_MONTHS.has(month.slice(5)) ? "Calm sea this month" : month.slice(5) === "07" || month.slice(5) === "08" ? "Meltemi wind likely" : "Quiet season"}
           </div>
         </div>
@@ -103,7 +103,7 @@ export function StayCalendar({
         </button>
       </div>
 
-      <div className="mt-2 grid grid-cols-7 text-center text-[12px] text-ink-3" aria-hidden>
+      <div className="mt-2 grid grid-cols-7 text-center text-xs text-ink-3" aria-hidden>
         {WEEKDAYS.map((d) => (
           <span key={d} className="py-1">{d}</span>
         ))}
@@ -136,7 +136,7 @@ export function StayCalendar({
                 aria-label={`${formatDate(iso, { weekday: "long", day: "numeric", month: "long" })}${state ? `, ${state}` : ""}`}
                 onClick={() => pick(iso)}
                 className={cn(
-                  "mx-auto grid h-11 w-full max-w-11 place-items-center rounded-full text-[15px] tabular-nums transition-colors",
+                  "mx-auto grid h-11 w-full max-w-11 place-items-center rounded-full text-base tabular-nums transition-colors",
                   isIn || isOut ? "bg-sea font-semibold text-white" : enabled ? "text-ink hover:bg-ink/10" : "text-ink-3/70",
                   sold && !isOut && "line-through",
                 )}
@@ -148,7 +148,7 @@ export function StayCalendar({
         })}
       </div>
 
-      <p className="mt-3 px-1 text-[14px] leading-snug text-ink-2" aria-live="polite">
+      <p className="mt-3 px-1 text-sm leading-snug text-ink-2" aria-live="polite">
         {pendingIn ? (
           <>
             Arriving <strong className="font-semibold text-ink">{fmt(checkIn)}</strong>. Now tap the day you leave, or keep {nights} nights.
@@ -159,7 +159,7 @@ export function StayCalendar({
           </>
         )}
       </p>
-      <p className="mt-1 px-1 text-[13px] text-ink-3">
+      <p className="mt-1 px-1 text-sm text-ink-3">
         <span className="line-through">12</span> means no suite of this kind is free that night.
       </p>
     </div>

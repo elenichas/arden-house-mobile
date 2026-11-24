@@ -33,9 +33,9 @@ export function GuestFeedbackPanel() {
           </div>
         ))}
       </div>
-      <textarea placeholder="type here..." className="w-full bg-[#00ffff] p-1 text-[10px] text-[#ff00ff]" style={{ height: 40, border: "none" }} />
+      <textarea placeholder="type here..." className="w-full bg-[#00ffff] p-1 text-xs text-[#ff00ff]" style={{ height: 40, border: "none" }} />
       <img src="/images/aspra/hero-cliffs.jpg" style={{ width: 60, filter: "hue-rotate(90deg) saturate(4)" }} />
-      <div onClick={() => setSent(true)} className="mt-1 inline-block bg-[#ff0000] px-1 text-[11px] text-[#ff6666]">
+      <div onClick={() => setSent(true)} className="mt-1 inline-block bg-[#ff0000] px-1 text-xs text-[#ff6666]">
         {sent ? "SENT!!!!" : "submit"}
       </div>
       <span style={{ display: "block", fontSize: 8, color: "#ffffff" }}>by submitting you agree to everything</span>

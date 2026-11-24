@@ -207,11 +207,11 @@ export function BookingFlow({
         <AnimatePresence mode="wait" initial={false}>
           <Step id={step} dir={dir}>
             <div className="px-5 pb-8 pt-3">
-              <h1 className="font-display text-[34px]">{titles[step]}</h1>
-              <p className="mb-6 mt-2 text-[15px] leading-relaxed text-ink-2">{intros[step]}</p>
+              <h1 className="font-display text-4xl">{titles[step]}</h1>
+              <p className="mb-6 mt-2 text-base leading-relaxed text-ink-2">{intros[step]}</p>
 
               {keptNotice && (
-                <div className="mb-6 flex items-center justify-between gap-3 rounded-2xl bg-sea-wash px-4 py-3 text-[14px] text-ink">
+                <div className="mb-6 flex items-center justify-between gap-3 rounded-2xl bg-sea-wash px-4 py-3 text-sm text-ink">
                   <span>We kept your choices from last time.</span>
                   <TextLink onClick={startOver}>Start over</TextLink>
                 </div>
@@ -235,7 +235,7 @@ export function BookingFlow({
 
               {step === "extras" && (
                 <div>
-                  <h2 className="mb-3 text-[16px] font-semibold">How you are arriving</h2>
+                  <h2 className="mb-3 text-base font-semibold">How you are arriving</h2>
                   <Segmented
                     label="How you are arriving"
                     value={draft.arrival.by}
@@ -253,13 +253,13 @@ export function BookingFlow({
                       { id: "ferry", label: "Ferry to Adamas" },
                     ]}
                   />
-                  <p className="mb-7 mt-3 flex items-center gap-2 text-[14px] text-ink-2">
+                  <p className="mb-7 mt-3 flex items-center gap-2 text-sm text-ink-2">
                     {draft.arrival.by === "air" ? <Plane className="size-4" aria-hidden /> : <Ship className="size-4" aria-hidden />}
                     {draft.arrival.by === "air"
                       ? `Milos airport is ${hotel.airportMinutes} minutes away. We ask for your flight number a week before.`
                       : `Adamas port is ${hotel.portMinutes} minutes by car, or 35 by our boat.`}
                   </p>
-                  <h2 className="mb-3 text-[16px] font-semibold">Extras</h2>
+                  <h2 className="mb-3 text-base font-semibold">Extras</h2>
                   <ExtrasPicker selected={draft.extras} onToggle={toggleExtra} />
                 </div>
               )}
@@ -315,7 +315,7 @@ export function BookingFlow({
           </div>
         }
       >
-        <p className="text-[15px] leading-relaxed text-ink-2">
+        <p className="text-base leading-relaxed text-ink-2">
           Nothing is booked yet. Your choices stay on this device, so you can pick up where you stopped.
         </p>
         <div className="mt-4">
@@ -362,8 +362,8 @@ function FlowFooter({
   return (
     <div className="flex items-center gap-4 border-t border-white/70 bg-white/55 px-5 backdrop-blur-xl pb-[max(env(safe-area-inset-bottom),14px)] pt-3">
       <div className="min-w-0 flex-1">
-        <div className="text-[18px] font-semibold tabular-nums">{euro(t.total)}</div>
-        <div className="truncate text-[13px] text-ink-3">
+        <div className="text-lg font-semibold tabular-nums">{euro(t.total)}</div>
+        <div className="truncate text-sm text-ink-3">
           {suiteById(draft.suiteId).name}, {nights} {nights === 1 ? "night" : "nights"}
         </div>
       </div>
@@ -403,7 +403,7 @@ function SuitePicker({
             <div className="relative aspect-[4/3]">
               <Photo src={s.image} alt={`${s.name} at Aspra`} className="absolute inset-0 size-full" />
               {lastSuite && s.id === "cave" && (
-                <span className="glass absolute left-3 top-3 rounded-full px-3 py-1 text-[12.5px] font-medium text-ink">
+                <span className="glass absolute left-3 top-3 rounded-full px-3 py-1 text-xs font-medium text-ink">
                   You stayed in {lastSuite}
                 </span>
               )}
@@ -419,14 +419,14 @@ function SuitePicker({
             </div>
             <div className="p-4">
               <div className="flex items-baseline justify-between gap-3">
-                <h3 className="font-display text-[25px]">{s.name}</h3>
-                <span className="shrink-0 text-[15px] font-semibold tabular-nums">
+                <h3 className="font-display text-2xl">{s.name}</h3>
+                <span className="shrink-0 text-base font-semibold tabular-nums">
                   {euro(s.nightly)}
                   <span className="font-normal text-ink-3"> / night</span>
                 </span>
               </div>
-              <p className="mt-1 text-[14.5px] leading-snug text-ink-2">{s.line}</p>
-              <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[13px] text-ink-3">
+              <p className="mt-1 text-sm leading-snug text-ink-2">{s.line}</p>
+              <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-ink-3">
                 <span className="inline-flex items-center gap-1.5"><Maximize2 className="size-3.5" aria-hidden />{s.size} m²</span>
                 <span className="inline-flex items-center gap-1.5"><Users className="size-3.5" aria-hidden />Up to {s.sleeps}</span>
                 <span className="inline-flex items-center gap-1.5"><BedDouble className="size-3.5" aria-hidden />{s.view}</span>
@@ -441,7 +441,7 @@ function SuitePicker({
                     className="overflow-hidden"
                   >
                     {s.facts.map((f) => (
-                      <li key={f} className="mt-2 flex gap-2 text-[14px] text-ink first:mt-3">
+                      <li key={f} className="mt-2 flex gap-2 text-sm text-ink first:mt-3">
                         <Check className="mt-0.5 size-4 shrink-0 text-sea" aria-hidden />
                         {f}
                       </li>
@@ -454,7 +454,7 @@ function SuitePicker({
           <div className="pointer-events-none absolute inset-x-0 top-0 aspect-[4/3]">
             <button
               onClick={() => onTour(s.id)}
-              className="pointer-events-auto absolute bottom-3 left-3 inline-flex h-10 items-center gap-2 rounded-full glass-smoke px-4 text-[14px] font-medium text-white hover:bg-obsidian/70"
+              className="pointer-events-auto absolute bottom-3 left-3 inline-flex h-10 items-center gap-2 rounded-full glass-smoke px-4 text-sm font-medium text-white hover:bg-obsidian/70"
             >
               <Box className="size-4 text-sulphur" aria-hidden /> {s.id === "villa" ? "See the bedroom in 3D" : "See it in 3D"}
             </button>
@@ -490,7 +490,7 @@ function DatesStep({
         onChange={(checkIn, checkOut) => setDraft((d) => ({ ...d, checkIn, checkOut }))}
       />
       {error && (
-        <p role="alert" className="mt-3 rounded-xl bg-clay-wash px-4 py-3 text-[14px] text-clay">
+        <p role="alert" className="mt-3 rounded-xl bg-clay-wash px-4 py-3 text-sm text-clay">
           {error}
         </p>
       )}
@@ -520,7 +520,7 @@ function DatesStep({
           onChange={(children) => setDraft((d) => ({ ...d, children }))}
         />
       </div>
-      <p className="mt-3 text-[13.5px] text-ink-3">
+      <p className="mt-3 text-sm text-ink-3">
         {suiteById(draft.suiteId).name} sleeps up to {suiteById(draft.suiteId).sleeps}. Minimum stay is 2 nights.
       </p>
     </div>
@@ -554,18 +554,18 @@ function Review({
   const s = suiteById(draft.suiteId)
   const t = bookingTotal(draft)
   const fieldClass =
-    "h-12 w-full rounded-xl glass px-4 text-[16px] placeholder:text-ink-3 focus:border-sea focus:outline-none"
+    "h-12 w-full rounded-xl glass px-4 text-base placeholder:text-ink-3 focus:border-sea focus:outline-none"
 
   return (
     <div className="space-y-6">
       <div className="flex gap-4 rounded-2xl glass p-3">
         <Photo src={s.image} alt="" className="size-24 shrink-0 rounded-xl" />
         <div className="min-w-0 py-1">
-          <div className="font-display text-[22px]">{s.name}</div>
-          <div className="mt-1 text-[14px] text-ink-2">
+          <div className="font-display text-2xl">{s.name}</div>
+          <div className="mt-1 text-sm text-ink-2">
             {formatDate(draft.checkIn, { day: "numeric", month: "long" })} to {formatDate(draft.checkOut, { day: "numeric", month: "long", year: "numeric" })}
           </div>
-          <div className="text-[14px] text-ink-2">
+          <div className="text-sm text-ink-2">
             {draft.adults} {draft.adults === 1 ? "adult" : "adults"}
             {draft.children > 0 && `, ${draft.children} ${draft.children === 1 ? "child" : "children"}`}
           </div>
@@ -577,7 +577,7 @@ function Review({
       </div>
 
       {errors.dates && (
-        <p id="review-dates-error" tabIndex={-1} role="alert" className="rounded-xl bg-clay-wash px-4 py-3 text-[14px] text-clay">
+        <p id="review-dates-error" tabIndex={-1} role="alert" className="rounded-xl bg-clay-wash px-4 py-3 text-sm text-clay">
           {errors.dates}
         </p>
       )}
@@ -596,19 +596,19 @@ function Review({
 
       {mode === "return" && remembered ? (
         <div className="rounded-2xl bg-sea-wash p-4">
-          <h2 className="text-[16px] font-semibold">We kept these from your last stay</h2>
+          <h2 className="text-base font-semibold">We kept these from your last stay</h2>
           <ul className="mt-3 flex flex-wrap gap-2">
             {remembered.map((r) => (
-              <li key={r} className="rounded-full bg-white/80 px-3 py-1.5 text-[13.5px] text-ink">
+              <li key={r} className="rounded-full bg-white/80 px-3 py-1.5 text-sm text-ink">
                 {r}
               </li>
             ))}
           </ul>
-          <p className="mt-3 text-[13.5px] text-ink-2">Change any of them later from your profile.</p>
+          <p className="mt-3 text-sm text-ink-2">Change any of them later from your profile.</p>
         </div>
       ) : (
-        <div className="rounded-2xl bg-sea-wash p-4 text-[14px] leading-relaxed text-ink">
-          <h2 className="mb-1 text-[16px] font-semibold">Your suite on arrival</h2>
+        <div className="rounded-2xl bg-sea-wash p-4 text-sm leading-relaxed text-ink">
+          <h2 className="mb-1 text-base font-semibold">Your suite on arrival</h2>
           {pillowOptions.find((p) => p.id === prefs.pillow)?.label} pillows,{" "}
           {scentOptions.find((p) => p.id === prefs.scent)?.label.toLowerCase()}, set to {prefs.temperature}°C.
           {canEdit("room") && (
@@ -621,11 +621,11 @@ function Review({
 
       {mode === "new" && (
         <fieldset className="space-y-3">
-          <legend className="mb-1 text-[16px] font-semibold">Who is the booking for?</legend>
-          <p className="text-[13.5px] text-ink-3">A sample guest is filled in for you. Change it if you like.</p>
+          <legend className="mb-1 text-base font-semibold">Who is the booking for?</legend>
+          <p className="text-sm text-ink-3">A sample guest is filled in for you. Change it if you like.</p>
           <div className="grid grid-cols-2 gap-3">
             <label className="block">
-              <span className="mb-1.5 block text-[14px] font-medium text-ink">First name</span>
+              <span className="mb-1.5 block text-sm font-medium text-ink">First name</span>
               <input
                 id="booking-first-name"
                 autoComplete="given-name"
@@ -637,7 +637,7 @@ function Review({
               />
             </label>
             <label className="block">
-              <span className="mb-1.5 block text-[14px] font-medium text-ink">
+              <span className="mb-1.5 block text-sm font-medium text-ink">
                 Last name <span className="font-normal text-ink-3">(optional)</span>
               </span>
               <input
@@ -649,12 +649,12 @@ function Review({
             </label>
           </div>
           {attempted && errors.first && (
-            <p id="booking-first-name-error" role="alert" className="text-[13.5px] text-clay">
+            <p id="booking-first-name-error" role="alert" className="text-sm text-clay">
               {errors.first}
             </p>
           )}
           <label className="block">
-            <span className="mb-1.5 block text-[14px] font-medium text-ink">Email</span>
+            <span className="mb-1.5 block text-sm font-medium text-ink">Email</span>
             <input
               id="booking-email"
               type="email"
@@ -668,15 +668,15 @@ function Review({
             />
           </label>
           {attempted && errors.email ? (
-            <p id="booking-email-error" role="alert" className="text-[13.5px] text-clay">
+            <p id="booking-email-error" role="alert" className="text-sm text-clay">
               {errors.email}
             </p>
           ) : (
-            <p id="booking-email-hint" className="text-[13px] text-ink-3">
+            <p id="booking-email-hint" className="text-sm text-ink-3">
               We send your confirmation here.
             </p>
           )}
-          <p className="text-[13px] text-ink-3">Free cancellation until 30 days before arrival.</p>
+          <p className="text-sm text-ink-3">Free cancellation until 30 days before arrival.</p>
         </fieldset>
       )}
     </div>
@@ -685,7 +685,7 @@ function Review({
 
 function Row({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
   return (
-    <div className={cn("flex items-baseline justify-between gap-4 py-3 text-[14.5px]", strong && "text-[16px] font-semibold")}>
+    <div className={cn("flex items-baseline justify-between gap-4 py-3 text-sm", strong && "text-base font-semibold")}>
       <dt className={strong ? "" : "text-ink-2"}>{label}</dt>
       <dd className="tabular-nums">{value}</dd>
     </div>
@@ -709,14 +709,14 @@ function Confirmed({ booking, firstName, onOpen }: { booking: Booking; firstName
         >
           <Check className="size-7" strokeWidth={2.6} aria-hidden />
         </motion.div>
-        <h1 className="mt-5 font-display text-[36px] leading-[1.02]">
+        <h1 className="mt-5 font-display text-4xl leading-[1.02]">
           Efharisto{firstName ? `, ${firstName}` : ""}. See you on Milos.
         </h1>
-        <p className="mt-3 text-[15px] leading-relaxed text-white/80">
+        <p className="mt-3 text-base leading-relaxed text-white/80">
           {s.name}, {formatDate(booking.checkIn, { day: "numeric", month: "long" })} to{" "}
           {formatDate(booking.checkOut, { day: "numeric", month: "long" })}. Reference {booking.ref}. A copy is on its way to your email.
         </p>
-        <ul className="mt-6 space-y-3 text-[15px] text-white/90">
+        <ul className="mt-6 space-y-3 text-base text-white/90">
           <li className="flex gap-3"><span className="mt-2 size-1.5 shrink-0 rounded-full bg-sulphur" />Nefeli, our concierge, can answer questions now, at any hour.</li>
           <li className="flex gap-3"><span className="mt-2 size-1.5 shrink-0 rounded-full bg-sulphur" />Plan your days and book the boat before it fills in spring.</li>
           <li className="flex gap-3"><span className="mt-2 size-1.5 shrink-0 rounded-full bg-sulphur" />Your suite is set up from the choices you made.</li>

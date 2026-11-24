@@ -46,7 +46,7 @@ export function Splash({ onDone }: { onDone: () => void }) {
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5, ease: EASE }}
-          className="font-display text-[40px]"
+          className="font-display text-4xl"
         >
           Aspra
         </motion.span>
@@ -54,7 +54,7 @@ export function Splash({ onDone }: { onDone: () => void }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.9 }}
-          className="text-[13px] text-white/70"
+          className="text-sm text-white/70"
         >
           Milos, Greece
         </motion.span>
@@ -88,11 +88,11 @@ export function Gate({ onChoose }: { onChoose: (k: GuestKind) => void }) {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.15, ease: EASE }}
-          className="max-w-[560px] px-2 font-display text-[40px] leading-[0.98] md:text-[56px] lg:text-[64px]"
+          className="max-w-[560px] px-2 font-display text-4xl leading-[0.98] md:text-6xl lg:text-6xl"
         >
           Seven suites in the white rock of Milos.
         </motion.h1>
-        <p className="mt-3 max-w-[32ch] px-2 text-[15px] leading-relaxed text-white/90 md:max-w-[40ch] md:text-[17px]">
+        <p className="mt-3 max-w-[32ch] px-2 text-base leading-relaxed text-white/90 md:max-w-[40ch] md:text-lg">
           This app looks after you from the day you book to long after you fly home.
         </p>
 
@@ -110,8 +110,8 @@ export function Gate({ onChoose }: { onChoose: (k: GuestKind) => void }) {
                   className="flex w-full items-center gap-4 px-5 py-4 text-left transition-colors hover:bg-white/10"
                 >
                   <span className="flex-1">
-                    <span className="block text-[17px] font-semibold">{p.title}</span>
-                    <span className="mt-0.5 block text-[14px] text-white/80">{p.detail}</span>
+                    <span className="block text-lg font-semibold">{p.title}</span>
+                    <span className="mt-0.5 block text-sm text-white/80">{p.detail}</span>
                   </span>
                   <span className="grid size-9 shrink-0 place-items-center rounded-full bg-white text-obsidian">
                     <ArrowRight className="size-4" aria-hidden />
@@ -120,7 +120,7 @@ export function Gate({ onChoose }: { onChoose: (k: GuestKind) => void }) {
               </motion.li>
             ))}
           </ul>
-          <p className="mt-4 flex items-center justify-center gap-2 text-center md:justify-start md:px-2 text-[12.5px] text-white/75">
+          <p className="mt-4 flex items-center justify-center gap-2 text-center md:justify-start md:px-2 text-xs text-white/75">
             <ArchMark className="size-4" /> {hotel.season}. Sample guests, no real bookings.
           </p>
         </nav>

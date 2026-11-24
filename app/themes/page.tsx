@@ -161,7 +161,7 @@ function Phone({ t }: { t: Theme }) {
   const card: CSSProperties = { background: c.surface, borderRadius: t.radius.card, border: `1px solid ${c.line}` }
   return (
     <div
-      className="w-[320px] shrink-0 overflow-hidden rounded-[36px] border-[6px] border-[#1b1d22] shadow-[0_10px_8px_rgb(0_0_0/0.12)]"
+      className="w-[320px] shrink-0 overflow-hidden rounded-4xl border-[6px] border-obsidian-2 shadow-[0_10px_8px_rgb(0_0_0/0.12)]"
       style={{ background: c.bg, color: c.ink, fontFamily: t.ui }}
     >
       {/* top bar */}
@@ -175,7 +175,7 @@ function Phone({ t }: { t: Theme }) {
             Aspra
           </span>
         </span>
-        <span className="grid size-9 place-items-center text-[12px] font-semibold" style={{ background: c.chipOn, color: c.onChipOn, borderRadius: t.radius.chip }}>
+        <span className="grid size-9 place-items-center text-xs font-semibold" style={{ background: c.chipOn, color: c.onChipOn, borderRadius: t.radius.chip }}>
           CW
         </span>
       </div>
@@ -203,7 +203,7 @@ function Phone({ t }: { t: Theme }) {
             <Ship className="size-[18px]" aria-hidden />
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block text-[14px] font-medium">Our boat meets you at Adamas</span>
+            <span className="block text-sm font-medium">Our boat meets you at Adamas</span>
             <span className="block" style={{ fontSize: 12.5, color: c.muted }}>Fri 4 June, 13:40. 35 minutes by sea.</span>
           </span>
         </div>
@@ -216,7 +216,7 @@ function Phone({ t }: { t: Theme }) {
           {["Slow", "Balanced", "Full"].map((x, i) => (
             <span
               key={x}
-              className="px-3.5 py-2 text-[13px] font-medium"
+              className="px-3.5 py-2 text-sm font-medium"
               style={{
                 borderRadius: t.radius.chip,
                 background: i === 0 ? c.chipOn : "transparent",
@@ -232,10 +232,10 @@ function Phone({ t }: { t: Theme }) {
 
       {/* buttons */}
       <div className="space-y-2 px-4 pt-4">
-        <div className="flex h-12 items-center justify-center gap-2 text-[14.5px] font-medium" style={{ background: c.primary, color: c.onPrimary, borderRadius: t.radius.button, ...(t.n === 3 ? { textTransform: "uppercase", letterSpacing: "0.1em", fontSize: 12 } : {}) }}>
+        <div className="flex h-12 items-center justify-center gap-2 text-sm font-medium" style={{ background: c.primary, color: c.onPrimary, borderRadius: t.radius.button, ...(t.n === 3 ? { textTransform: "uppercase", letterSpacing: "0.1em", fontSize: 12 } : {}) }}>
           <Box className="size-[18px]" aria-hidden /> Walk through your suite
         </div>
-        <div className="flex h-12 items-center justify-center gap-2 text-[14.5px] font-medium" style={{ border: `1px solid ${t.n === 3 ? c.primary : c.ink}`, color: t.n === 3 ? c.primary : c.ink, borderRadius: t.radius.button, ...(t.n === 3 ? { textTransform: "uppercase", letterSpacing: "0.1em", fontSize: 12 } : {}) }}>
+        <div className="flex h-12 items-center justify-center gap-2 text-sm font-medium" style={{ border: `1px solid ${t.n === 3 ? c.primary : c.ink}`, color: t.n === 3 ? c.primary : c.ink, borderRadius: t.radius.button, ...(t.n === 3 ? { textTransform: "uppercase", letterSpacing: "0.1em", fontSize: 12 } : {}) }}>
           Open my plan <ArrowRight className="size-4" aria-hidden />
         </div>
       </div>
@@ -249,7 +249,7 @@ function Phone({ t }: { t: Theme }) {
           <p className="mt-1.5" style={{ fontFamily: t.display, fontSize: 21, fontWeight: t.headline.fontWeight, lineHeight: 1.12, letterSpacing: t.headline.letterSpacing }}>
             Questions before you travel?
           </p>
-          <span className="mt-3 inline-block px-3 py-1.5 text-[12.5px]" style={{ border: `1px solid ${c.onDark}55`, borderRadius: t.radius.chip }}>
+          <span className="mt-3 inline-block px-3 py-1.5 text-xs" style={{ border: `1px solid ${c.onDark}55`, borderRadius: t.radius.chip }}>
             Plan my first day
           </span>
         </div>
@@ -263,7 +263,7 @@ function Phone({ t }: { t: Theme }) {
           { l: "Nefeli", I: MessageCircle },
           { l: "Journal", I: BookOpen },
         ].map(({ l, I }, i) => (
-          <span key={l} className="flex flex-col items-center gap-1 text-[11px] font-medium" style={{ color: i === 0 ? (t.n === 3 ? c.primary : c.ink) : c.muted }}>
+          <span key={l} className="flex flex-col items-center gap-1 text-xs font-medium" style={{ color: i === 0 ? (t.n === 3 ? c.primary : c.ink) : c.muted }}>
             <I className="size-5" strokeWidth={i === 0 ? 2.2 : 1.7} aria-hidden />
             {l}
           </span>
@@ -280,10 +280,10 @@ export default function ThemesPage() {
   return (
     <main className={`${fontVars} min-h-[100svh] bg-[#e8e9ec] px-5 py-10 text-[#14161b]`} style={{ fontFamily: "var(--f-instrument)" }}>
       <header className="mx-auto max-w-[1100px]">
-        <h1 className="text-[34px] font-semibold tracking-[-0.02em]" style={{ fontFamily: "var(--f-bricolage)" }}>
+        <h1 className="text-4xl font-semibold tracking-[-0.02em]" style={{ fontFamily: "var(--f-bricolage)" }}>
           Five directions for Aspra
         </h1>
-        <p className="mt-2 max-w-[62ch] text-[15.5px] leading-relaxed text-[#4a4f5a]">
+        <p className="mt-2 max-w-[62ch] text-base leading-relaxed text-[#4a4f5a]">
           The same screen in five themes. Each has its own colours, typefaces and corner shapes. Scroll sideways to compare, then tell me the number you want across the whole app.
         </p>
       </header>
@@ -292,19 +292,19 @@ export default function ThemesPage() {
         {THEMES.map((t) => (
           <section key={t.n} className="w-[320px] shrink-0" aria-label={`Option ${t.n}: ${t.name}`}>
             <div className="mb-4 h-[196px]">
-              <p className="text-[13px] font-medium text-[#5a6170]">Option {t.n}</p>
+              <p className="text-sm font-medium text-ink-3">Option {t.n}</p>
               <h2 style={{ fontFamily: t.display, fontSize: 32, fontWeight: t.headline.fontWeight, lineHeight: 1.1, letterSpacing: t.headline.letterSpacing }}>
                 {t.name} <span className="text-[#7a808c]" style={{ fontSize: 18 }}>{t.greek}</span>
               </h2>
-              <p className="mt-2 text-[14px] leading-snug text-[#3a3f49]">{t.mood}</p>
-              <p className="mt-1.5 text-[13.5px] leading-snug text-[#5a6170]">{t.bestFor}</p>
+              <p className="mt-2 text-sm leading-snug text-ink-2">{t.mood}</p>
+              <p className="mt-1.5 text-sm leading-snug text-ink-3">{t.bestFor}</p>
               <div className="mt-3 flex items-center gap-3">
                 <span className="flex">
                   {[t.c.bg, t.c.ink, t.c.primary, t.c.accent, t.c.dark].map((x, i) => (
                     <span key={i} className="-ml-1.5 size-6 rounded-full border-2 border-white first:ml-0" style={{ background: x }} />
                   ))}
                 </span>
-                <span className="text-[12.5px] text-[#3a3f49]">
+                <span className="text-xs text-ink-2">
                   {t.fonts[0]} + {t.fonts[1]}
                 </span>
               </div>

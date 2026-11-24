@@ -34,8 +34,8 @@ export function PlanTab() {
   if (!booking) {
     return (
       <div className="pb-nav px-5 pt-4">
-        <h1 className="font-display text-[38px]">Your plan</h1>
-        <p className="mt-3 text-[15px] leading-relaxed text-ink-2">
+        <h1 className="font-display text-4xl">Your plan</h1>
+        <p className="mt-3 text-base leading-relaxed text-ink-2">
           Once you book, this is where you plan each day on Milos: boats, dinners, the spa and the walks Nefeli suggests.
         </p>
         <Button size="lg" className="mt-6" onClick={() => window.dispatchEvent(new Event("aspra:rebook"))}>
@@ -58,8 +58,8 @@ export function PlanTab() {
   return (
     <div className="pb-nav">
       <div className="px-5 pt-2">
-        <h1 className="font-display text-[38px]">Your plan</h1>
-        <p className="mt-1 text-[15px] text-ink-2">
+        <h1 className="font-display text-4xl">Your plan</h1>
+        <p className="mt-1 text-base text-ink-2">
           {t.nights} nights. {plan.length} {plan.length === 1 ? "thing" : "things"} planned
           {experiencesCost > 0 ? `, ${euro(experiencesCost)} so far` : ""}. Leave space for doing nothing.
         </p>
@@ -78,14 +78,14 @@ export function PlanTab() {
               aria-label={`${d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })}${i === todayIndex ? ", today" : ""}${count ? `, ${count} planned` : ""}`}
               onClick={() => setDay(i)}
               className={cn(
-                "flex h-[68px] w-[56px] shrink-0 flex-col items-center justify-center rounded-xl border transition-colors",
+                "flex h-[68px] w-[56px] shrink-0 flex-col items-center justify-center rounded-full border transition-colors",
                 active ? "border-ink bg-ink text-white" : i === todayIndex ? "border-sea bg-white/70 text-ink backdrop-blur-md" : "border-white/80 bg-white/60 text-ink backdrop-blur-md",
               )}
             >
-              <span className={cn("text-[12px]", active ? "text-white/75" : i === todayIndex ? "font-semibold text-sea-deep" : "text-ink-3")}>
+              <span className={cn("text-xs", active ? "text-white/75" : i === todayIndex ? "font-semibold text-sea-deep" : "text-ink-3")}>
                 {i === todayIndex ? "Today" : d.toLocaleDateString("en-GB", { weekday: "short" })}
               </span>
-              <span className="text-[19px] font-semibold tabular-nums">{d.getDate()}</span>
+              <span className="text-xl font-semibold tabular-nums">{d.getDate()}</span>
               <span className={cn("mt-0.5 size-1.5 rounded-full", count ? (active ? "bg-sulphur" : "bg-sea") : "bg-transparent")} aria-hidden />
             </button>
           )
@@ -94,7 +94,7 @@ export function PlanTab() {
 
       <div className="lg:grid lg:grid-cols-[1.15fr_1fr] lg:items-start">
       <section className="px-5 pt-5" aria-live="polite">
-        <h2 className="text-[17px] font-semibold">
+        <h2 className="text-lg font-semibold">
           {dayName(day)}
           <span className="ml-2 font-normal text-ink-3">
             {day === todayIndex ? "Today" : day === 0 ? "Arrival" : day === t.nights ? "Departure" : `Day ${day + 1}`}
@@ -117,11 +117,11 @@ export function PlanTab() {
                 >
                   <Photo src={e.image} alt="" className="size-20 shrink-0 rounded-xl" />
                   <div className="min-w-0 flex-1 py-0.5">
-                    <div className="flex items-center gap-2 text-[13.5px] font-semibold tabular-nums text-sea">
+                    <div className="flex items-center gap-2 text-sm font-semibold tabular-nums text-sea">
                       {p.time} <StatusPill status={p.status} />
                     </div>
-                    <div className="mt-1 text-[15px] font-medium leading-snug">{e.name}</div>
-                    <div className="text-[13px] text-ink-3">
+                    <div className="mt-1 text-base font-medium leading-snug">{e.name}</div>
+                    <div className="text-sm text-ink-3">
                       {e.duration} · {experienceCost(e, booking) > 0 ? euro(experienceCost(e, booking)) : priceLabel(e)}
                     </div>
                   </div>
@@ -140,7 +140,7 @@ export function PlanTab() {
         </ul>
 
         {items.length === 0 && (
-          <p className="rounded-2xl glass p-4 text-[14.5px] leading-relaxed text-ink-2">
+          <p className="rounded-2xl glass p-4 text-sm leading-relaxed text-ink-2">
             {day === 0
               ? "An open first evening. Most guests swim, then eat at Thalami."
               : prefs.pace === "slow"
@@ -162,7 +162,7 @@ export function PlanTab() {
       <section className="mt-12 px-5 lg:mt-5">
         <SectionTitle>Your stay</SectionTitle>
         <div className="rounded-2xl glass p-4">
-          <dl className="space-y-2 text-[14.5px]">
+          <dl className="space-y-2 text-sm">
             <div className="flex items-baseline justify-between gap-4">
               <dt className="text-ink-2">Suite and extras</dt>
               <dd className="tabular-nums">{euro(t.total)}</dd>
@@ -171,7 +171,7 @@ export function PlanTab() {
               <dt className="text-ink-2">Planned experiences</dt>
               <dd className="tabular-nums">{euro(experiencesCost)}</dd>
             </div>
-            <div className="flex items-baseline justify-between gap-4 border-t border-border pt-2 text-[16px] font-semibold">
+            <div className="flex items-baseline justify-between gap-4 border-t border-border pt-2 text-base font-semibold">
               <dt>Total so far</dt>
               <dd className="tabular-nums">{euro(t.total + experiencesCost)}</dd>
             </div>
@@ -179,7 +179,7 @@ export function PlanTab() {
           <Button variant="outline" block className="mt-4" onClick={() => store.setStayOpen(true)}>
             Manage your stay
           </Button>
-          <p className="mt-3 text-[13px] leading-snug text-ink-3">Dates, extras and how your suite is set up are all in one place.</p>
+          <p className="mt-3 text-sm leading-snug text-ink-3">Dates, extras and how your suite is set up are all in one place.</p>
         </div>
       </section>
       </div>
@@ -189,19 +189,19 @@ export function PlanTab() {
         onClose={() => setAdding(false)}
         title={`Add to ${new Date(addDays(booking.checkIn, day) + "T12:00:00").toLocaleDateString("en-GB", { weekday: "long" })}`}
       >
-        <p className="mb-4 text-[14px] text-ink-2">Ordered by what you told us you like.</p>
+        <p className="mb-4 text-sm text-ink-2">Ordered by what you told us you like.</p>
         <ul className="space-y-3">
           {[...ranked, ...others].map((e) => (
             <li key={e.id} className="flex gap-3 rounded-2xl glass p-3">
               <Photo src={e.image} alt="" className="size-20 shrink-0 rounded-xl" />
               <div className="min-w-0 flex-1">
-                <div className="text-[12.5px] font-medium text-sea">{reasonFor(e, prefs)}</div>
-                <div className="text-[15px] font-medium leading-snug">{e.name}</div>
-                <div className="mt-0.5 text-[13px] text-ink-3">
+                <div className="text-xs font-medium text-sea">{reasonFor(e, prefs)}</div>
+                <div className="text-base font-medium leading-snug">{e.name}</div>
+                <div className="mt-0.5 text-sm text-ink-3">
                   {e.defaultTime}, {e.duration} · {priceLabel(e)}
                   {e.per === "person" && booking.adults + booking.children > 1 ? `, ${euro(experienceCost(e, booking))} for ${booking.adults + booking.children}` : ""}
                 </div>
-                {e.windSensitive && <div className="mt-1 text-[12.5px] text-clay">Runs only when the wind allows</div>}
+                {e.windSensitive && <div className="mt-1 text-xs text-clay">Runs only when the wind allows</div>}
               </div>
               <IconButton
                 label={`Add ${e.name}`}
